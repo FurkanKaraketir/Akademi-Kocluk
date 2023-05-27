@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AllStudentsActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="8dp"
+        app:cardCornerRadius="10dp">
+
+        <TextView
+            android:id="@+id/allStudentsTextView"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/t_m_renciler" />
+    </androidx.cardview.widget.CardView>
+
+    <EditText
+        android:id="@+id/searchStudentAllStudentsActivityEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:autofillHints="StudentName"
+        android:hint="@string/renci_ara"
+        android:inputType="text"
+        android:maxLength="40">
+
+    </EditText>
+
+    <LinearLayout
+        android:id="@+id/gradeAllSpinnerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/s_n_f"
+            android:textSize="18sp" />
+
+        <Spinner
+            android:id="@+id/gradeAllSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:spinnerMode="dialog"
+            android:tooltipText="Alan Seçimi Yapınız"
+            tools:ignore="UnusedAttribute" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAllStudents"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>

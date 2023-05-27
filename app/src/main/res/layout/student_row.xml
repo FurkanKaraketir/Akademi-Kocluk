@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/studentCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="30dp">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/studentNameTextView"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:text=""
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:ignore="RelativeOverlap" />
+
+        <LinearLayout
+            android:id="@+id/fiveStarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/studentNameTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/starOne"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/baseline_stars_24" />
+
+            <ImageView
+                android:id="@+id/starTwo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/baseline_stars_24"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/starThree"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/baseline_stars_24"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/starFour"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/baseline_stars_24"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/starFive"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/baseline_stars_24"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/degerlendirmeDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/studentGradeTextView"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="20dp"
+            android:text=""
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/todayStudyImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:layout_toEndOf="@id/studentNameTextView"
+            android:contentDescription="@string/add_something" />
+
+        <Button
+            android:id="@+id/studentDeleteButton"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_baseline_remove_circle_outline_24"
+            tools:ignore="RelativeOverlap">
+
+        </Button>
+
+        <Button
+            android:id="@+id/studentAddButton"
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_baseline_add_circle_outline_24"
+            tools:ignore="RelativeOverlap">
+
+        </Button>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
