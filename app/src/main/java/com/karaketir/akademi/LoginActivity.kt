@@ -54,10 +54,12 @@ class LoginActivity : AppCompatActivity() {
         signUpButton.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             this.startActivity(intent)
+            finish()
         }
         iWanSignUpText.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             this.startActivity(intent)
+            finish()
         }
 
         loginButton.setOnClickListener {

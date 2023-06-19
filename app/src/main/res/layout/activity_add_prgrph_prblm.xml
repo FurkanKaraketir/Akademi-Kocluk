@@ -22,14 +22,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="20dp"
-        android:hint="@string/ka_dakika_testi_zd_n">
+        android:hint="@string/ka_dakika_testi_zd_n"
+        android:maxLength="3">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/paragrafDkEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:maxLength="4" />
+            android:maxLength="3" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -41,13 +42,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="20dp"
         android:hint="@string/ka_tane_soru_zd_n"
-        android:maxLength="4">
+        android:maxLength="3">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/paragrafSoruEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="3" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

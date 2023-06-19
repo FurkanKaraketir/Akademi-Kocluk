@@ -1,96 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ProfileActivity">
+    android:layout_height="match_parent">
+
+    <LinearLayout
 
 
-    <TextView
-        android:id="@+id/currentNameTextView"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:text="@string/sim" />
+        android:orientation="vertical"
+        tools:context=".ProfileActivity">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/TextInputChangeName"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/yeni_sim_ve_soyisim">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/changeNameEditText"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/currentNameTextView"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:maxLength="40" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:text="@string/sim" />
 
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/currentGradeTextView"
-        style="@style/TextAppearance.AppCompat.Title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:text="@string/s_n_f" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/TextInputChangeGrade"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/s_n_f">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/changeGradeEditText"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputChangeName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="40" />
+            android:layout_margin="15dp"
+            android:hint="@string/yeni_sim_ve_soyisim">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/changeNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPersonName"
+                android:maxLength="40" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/currentGradeTextView"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:text="@string/s_n_f" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputChangeGrade"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="@string/s_n_f">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/changeGradeEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="40" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/saveProfileButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="30dp"
-        android:contentDescription="@string/add_something"
-        android:src="@drawable/ic_baseline_save_24" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/saveProfileButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="30dp"
+            android:contentDescription="@string/add_something"
+            android:src="@drawable/ic_baseline_save_24" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/subscriptionThing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="30dp"
-        android:contentDescription="@string/add_something"
-        android:text="@string/yelik_lemleri"
-        app:icon="@drawable/baseline_attach_money_24" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/subscriptionThing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="30dp"
+            android:contentDescription="@string/add_something"
+            android:text="@string/yelik_lemleri"
+            app:icon="@drawable/baseline_attach_money_24" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/deleteAccountButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="30dp"
-        android:text="@string/hesab_sil"
-        app:icon="@drawable/ic_baseline_error_outline_24" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/deleteAccountButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="30dp"
+            android:text="@string/hesab_sil"
+            app:icon="@drawable/ic_baseline_error_outline_24" />
 
-</LinearLayout>
+    </LinearLayout>
 
 
+</ScrollView>

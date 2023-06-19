@@ -57,7 +57,6 @@ class RegisterActivity : AppCompatActivity() {
         val emailEditText = binding.emailRegisterEditText
         val passwordEditText = binding.passwordRegisterEditText
         val nameAndSurnameEditText = binding.nameAndSurnameEditText
-        val kurumKoduEditText = binding.kurumKoduEditText
         val kullanici = binding.kullanimBtn
         val gizlilik = binding.gizBtn
         val cerez = binding.cerezBtn
@@ -94,28 +93,20 @@ class RegisterActivity : AppCompatActivity() {
                             if (nameAndSurnameEditText.text.toString().isNotEmpty()) {
                                 nameAndSurnameEditText.error = null
 
-                                if (kurumKoduEditText.text.toString().isNotEmpty()) {
-                                    kurumKoduEditText.error = null
 
 
-                                    nameAndSurname = nameAndSurnameEditText.text.toString()
 
-                                    grade = try {
-                                        gradeText.text.toString().toInt()
-                                    } catch (e: Exception) {
-                                        0
-                                    }
+                                nameAndSurname = nameAndSurnameEditText.text.toString()
 
-                                    signUp(
-                                        emailEditText.text.toString(),
-                                        passwordEditText.text.toString(),
-                                        kurumKoduEditText.text.toString().toInt()
-                                    )
-
-
-                                } else {
-                                    kurumKoduEditText.error = "Bu Alan Boş Bırakılamaz"
+                                grade = try {
+                                    gradeText.text.toString().toInt()
+                                } catch (e: Exception) {
+                                    0
                                 }
+
+                                signUp(
+                                    emailEditText.text.toString(), passwordEditText.text.toString()
+                                )
 
 
                             } else {
@@ -150,66 +141,74 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         teacherButton.setOnClickListener {
+            selection = 2
             registerLayout.visibility = View.VISIBLE
             textInputClass.visibility = View.GONE
-            selection = 2
         }
 
 
     }
 
-    private fun signUp(email: String, password: String, kurumKodu: Int) {
+    private fun signUp(email: String, password: String) {
+        val kurumKodu = 763455
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this) { task ->
             if (task.isSuccessful) {
                 documentID = auth.uid!!
 
-                if (selection == 1) {
-                    val user = hashMapOf(
-                        "email" to email,
-                        "grade" to grade,
-                        "id" to documentID,
-                        "nameAndSurname" to nameAndSurname,
-                        "personType" to "Student",
-                        "kurumKodu" to kurumKodu,
-                        "teacher" to "",
-                    )
 
-                    db.collection("User").document(documentID).set(user).addOnSuccessListener {
+                when (selection) {
+                    1 -> {
+                        val user = hashMapOf(
+                            "email" to email,
+                            "grade" to grade,
+                            "id" to documentID,
+                            "nameAndSurname" to nameAndSurname,
+                            "personType" to "Student",
+                            "kurumKodu" to kurumKodu,
+                            "teacher" to "",
+                        )
 
-                        db.collection("School").document(kurumKodu.toString()).collection("Student")
-                            .document(documentID).set(user).addOnSuccessListener {
-                                Toast.makeText(this, "Başarılı", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this, MainActivity::class.java)
-                                this.startActivity(intent)
-                                finish()
-                            }
+                        db.collection("User").document(documentID).set(user).addOnSuccessListener {
+
+                            db.collection("School").document(kurumKodu.toString())
+                                .collection("Student").document(documentID).set(user)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Başarılı", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    this.startActivity(intent)
+                                    finish()
+                                }
 
 
-                    }.addOnFailureListener { e ->
-                        Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }.addOnFailureListener { e ->
+                            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
-                } else if (selection == 2) {
-                    val user = hashMapOf(
-                        "email" to email,
-                        "id" to documentID,
-                        "nameAndSurname" to nameAndSurname,
-                        "personType" to "Teacher",
-                        "kurumKodu" to kurumKodu,
-                    )
 
-                    db.collection("User").document(documentID).set(user).addOnSuccessListener {
+                    2 -> {
+                        val user = hashMapOf(
+                            "email" to email,
+                            "id" to documentID,
+                            "nameAndSurname" to nameAndSurname,
+                            "personType" to "Teacher",
+                            "kurumKodu" to kurumKodu,
+                        )
 
-                        db.collection("School").document(kurumKodu.toString()).collection("Teacher")
-                            .document(documentID).set(user).addOnSuccessListener {
-                                Toast.makeText(this, "Başarılı", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this, MainActivity::class.java)
-                                this.startActivity(intent)
-                                finish()
-                            }
+                        db.collection("User").document(documentID).set(user).addOnSuccessListener {
+
+                            db.collection("School").document(kurumKodu.toString())
+                                .collection("Teacher").document(documentID).set(user)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Başarılı", Toast.LENGTH_SHORT).show()
+                                    val intent = Intent(this, MainActivity::class.java)
+                                    this.startActivity(intent)
+                                    finish()
+                                }
 
 
-                    }.addOnFailureListener { e ->
-                        Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }.addOnFailureListener { e ->
+                            Toast.makeText(this, e.localizedMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
 
