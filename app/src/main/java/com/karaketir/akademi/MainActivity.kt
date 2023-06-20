@@ -105,6 +105,8 @@ class MainActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        val developerButton = binding.developerButtonMain
+
         Purchases.logLevel = LogLevel.DEBUG
 
 
@@ -171,6 +173,14 @@ class MainActivity : AppCompatActivity() {
         val updateLayout = binding.updateLayout
         val updateButton = binding.updateButton
         val excelButton = binding.excelButton
+
+
+
+        developerButton.setOnClickListener {
+            openLink(
+                "https://www.linkedin.com/in/furkankaraketir/", this
+            )
+        }
 
         updateButton.setOnClickListener {
             openLink(
@@ -286,6 +296,7 @@ class MainActivity : AppCompatActivity() {
                 addStudyButton.visibility = View.VISIBLE
                 kocOgretmenTextView.visibility = View.VISIBLE
                 excelButton.visibility = View.GONE
+                binding.developerButtonMain.visibility = View.VISIBLE
 
                 db.collection("School").document(kurumKodu.toString()).collection("Student")
                     .document(auth.uid.toString()).get().addOnSuccessListener { student ->
@@ -385,6 +396,7 @@ class MainActivity : AppCompatActivity() {
                 gorevButton.visibility = View.GONE
                 gradeSpinnerLayout.visibility = View.VISIBLE
                 contentTextView.text = "Öğrencilerim"
+                binding.developerButtonMain.visibility = View.VISIBLE
 
                 val sheet: Sheet = workbook.createSheet("Sayfa 1")
 

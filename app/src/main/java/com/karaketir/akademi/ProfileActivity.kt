@@ -13,6 +13,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.karaketir.akademi.databinding.ActivityProfileBinding
+import com.karaketir.akademi.services.openLink
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -47,6 +48,13 @@ class ProfileActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        val developerButton = binding.developerButtonProfile
+
+        developerButton.setOnClickListener {
+            openLink(
+                "https://www.linkedin.com/in/furkankaraketir/", this
+            )
+        }
         val saveButton = binding.saveProfileButton
         val deleteUser = binding.deleteAccountButton
         val nameText = binding.currentNameTextView
