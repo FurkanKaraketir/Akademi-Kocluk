@@ -19,8 +19,8 @@ android {
         applicationId "com.karaketir.akademi"
         minSdk 22
         targetSdk 33
-        versionCode 7
-        versionName "v0.0.7"
+        versionCode 8
+        versionName "v0.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,15 +60,15 @@ dependencies {
     implementation 'com.github.dhaval2404:imagepicker:2.1'
     implementation 'com.giphy.sdk:ui:2.3.0'
 
-    implementation 'com.android.billingclient:billing:6.0.0'
+    implementation 'com.android.billingclient:billing:6.0.1'
     implementation 'com.revenuecat.purchases:purchases:6.0.0'
 
     implementation 'com.google.firebase:firebase-firestore-ktx:24.6.1'
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.7'
-    implementation 'com.google.firebase:firebase-perf-ktx:20.3.2'
-    implementation 'com.google.firebase:firebase-storage-ktx:20.2.0'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.3.3'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
 
     implementation 'com.google.android.gms:play-services-ads:22.1.0'
     implementation 'com.github.iwgang:countdownview:2.1.6'
