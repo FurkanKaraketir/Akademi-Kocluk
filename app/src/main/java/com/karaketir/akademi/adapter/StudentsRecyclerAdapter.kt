@@ -81,7 +81,7 @@ open class StudentsRecyclerAdapter(
                 }
 
                 var cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+                cal[Calendar.HOUR_OF_DAY] = 0
 
                 cal.clear(Calendar.MINUTE)
                 cal.clear(Calendar.SECOND)
@@ -133,7 +133,7 @@ open class StudentsRecyclerAdapter(
                     "Bu Ay" -> {
 
                         cal = Calendar.getInstance()
-                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+                        cal[Calendar.HOUR_OF_DAY] = 0
 
                         cal.clear(Calendar.MINUTE)
                         cal.clear(Calendar.SECOND)
@@ -151,7 +151,7 @@ open class StudentsRecyclerAdapter(
 
                     "Geçen Ay" -> {
                         cal = Calendar.getInstance()
-                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+                        cal[Calendar.HOUR_OF_DAY] = 0
 
                         cal.clear(Calendar.MINUTE)
                         cal.clear(Calendar.SECOND)

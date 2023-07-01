@@ -49,7 +49,7 @@ class GoalsRecyclerAdapter(private val goalList: ArrayList<Goal>) :
                     "Hedef Toplam Çalışma: " + myItem.toplamCalisma.toString() + "dk"
                 binding.hedefSoru.text = "Hedef Toplam Soru: " + myItem.cozulenSoru.toString()
                 val cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+                cal[Calendar.HOUR_OF_DAY] = 0
 
                 cal.clear(Calendar.MINUTE)
                 cal.clear(Calendar.SECOND)

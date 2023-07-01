@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 Purchases.sharedInstance.updatedCustomerInfoListener =
                     UpdatedCustomerInfoListener { customer ->
-                        // - Update our user's customerInfo object
+
                         UserViewModel.shared.customerInfo.value = customer
 
                     }
@@ -400,10 +400,8 @@ class MainActivity : AppCompatActivity() {
 
                 val sheet: Sheet = workbook.createSheet("Sayfa 1")
 
-                //Create Header Cell Style
                 val cellStyle = getHeaderStyle(workbook)
 
-                //Creating sheet header row
                 createSheetHeader(cellStyle, sheet)
 
                 excelButton.setOnClickListener {
@@ -589,7 +587,6 @@ class MainActivity : AppCompatActivity() {
 
         handler.post(object : Runnable {
             override fun run() {
-                // Keep the postDelayed before the updateTime(), so when the event ends, the handler will stop too.
                 handler.postDelayed(this, 1000)
                 updateTime(grade)
             }
@@ -753,8 +750,6 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
             if (isGranted) {
                 createExcel(this, secilenGrade, secilenZaman, workbook)
-            } else {
-                // Permission not granted, handle accordingly
             }
         }
 
@@ -763,7 +758,6 @@ class MainActivity : AppCompatActivity() {
                 this, Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Permission not granted, request it
             requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         } else {
             createExcel(this, secilenGrade, secilenZaman, workbook)

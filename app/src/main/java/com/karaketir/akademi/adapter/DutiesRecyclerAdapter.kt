@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.karaketir.akademi.adapter
 
 import android.annotation.SuppressLint

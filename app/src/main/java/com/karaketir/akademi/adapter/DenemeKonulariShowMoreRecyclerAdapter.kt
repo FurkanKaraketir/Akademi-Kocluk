@@ -63,21 +63,11 @@ class DenemeKonulariShowMoreRecyclerAdapter(
                     }
                 }
 
-
-                // Create layout manager with initial prefetch item count
-
-                // Create layout manager with initial prefetch item count
-
-
                 val layoutManager = LinearLayoutManager(
                     binding.showMoreSubjects.context, LinearLayoutManager.VERTICAL, false
                 )
                 layoutManager.initialPrefetchItemCount = myItem.getSubItemList().size
 
-                // Create sub item view adapter
-
-
-                // Create sub item view adapter
                 val subItemAdapter =
                     DenemeKonulariRecyclerAdapter(myItem.getSubItemList(), myItem.dersAdi)
                 binding.showMoreSubjects.layoutManager = layoutManager
