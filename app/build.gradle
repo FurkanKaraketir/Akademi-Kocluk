@@ -19,8 +19,8 @@ android {
         applicationId "com.karaketir.akademi"
         minSdk 22
         targetSdk 33
-        versionCode 8
-        versionName "v0.0.8"
+        versionCode 9
+        versionName "v0.0.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -69,6 +69,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics-ktx:18.3.7'
     implementation 'com.google.firebase:firebase-perf-ktx:20.3.3'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
+
+    implementation 'io.github.ShawnLin013:number-picker:2.4.13'
 
     implementation 'com.google.android.gms:play-services-ads:22.1.0'
     implementation 'com.github.iwgang:countdownview:2.1.6'
