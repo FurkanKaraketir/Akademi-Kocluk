@@ -173,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         val updateLayout = binding.updateLayout
         val updateButton = binding.updateButton
         val excelButton = binding.excelButton
-
+        val dersProgramiButton = binding.dersProgramiButton
 
 
         developerButton.setOnClickListener {
@@ -273,6 +273,11 @@ class MainActivity : AppCompatActivity() {
 
         })
 
+        dersProgramiButton.setOnClickListener {
+            val newIntent = Intent(this, ProgramActivity::class.java)
+            this.startActivity(newIntent)
+        }
+
 
         var visible = false
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
@@ -314,6 +319,7 @@ class MainActivity : AppCompatActivity() {
 
                         }
                     }
+                dersProgramiButton.visibility = View.VISIBLE
                 searchBarTeacher.visibility = View.GONE
                 gradeSpinnerLayout.visibility = View.GONE
                 topStudentsButton.visibility = View.GONE
@@ -379,6 +385,7 @@ class MainActivity : AppCompatActivity() {
 
             } else if (it.get("personType").toString() == "Teacher") {
                 studySearchEditText.visibility = View.GONE
+                dersProgramiButton.visibility = View.GONE
                 hedeflerStudentButton.visibility = View.GONE
                 excelButton.visibility = View.VISIBLE
                 searchEditText.visibility = View.VISIBLE

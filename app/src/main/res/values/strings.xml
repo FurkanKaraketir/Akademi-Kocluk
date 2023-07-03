@@ -127,4 +127,15 @@
     <string name="yelik_lemleri">Üyelik İşlemleri</string>
     <string name="furkan_karaketir_taraf_ndan_geli_tirildi">Furkan Karaketir Tarafından Geliştirildi</string>
     <string name="kaydet">Kaydet</string>
+    <string name="ders_program">Ders Programı</string>
+    <string name="pazartesi">Pazartesi</string>
+    <string name="sal">Salı</string>
+    <string name="ar_amba">Çarşamba</string>
+    <string name="per_embe">Perşembe</string>
+    <string name="cuma">Cuma</string>
+    <string name="cumartesi">Cumartesi</string>
+    <string name="pazar">Pazar</string>
+    <string name="ka_dakika">Kaç Dakika?</string>
+    <string name="g_n_se_iniz">Gün Seçiniz</string>
+    <string name="ka_nc_ders">Kaçıncı Ders?</string>
 </resources>

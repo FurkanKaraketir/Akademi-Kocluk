@@ -106,6 +106,7 @@ class StudiesActivity : AppCompatActivity() {
         createSheetHeader(cellStyle, sheet)
 
         val previousRatingsButton = binding.previousRatingsButton
+        val dersProgramiTeacherButton = binding.dersProgramiTeacherButton
         val gorevlerButton = binding.gorevTeacherButton
         val denemelerButton = binding.denemeTeacherButton
         val hedefTeacherButton = binding.hedefTeacherButton
@@ -145,6 +146,12 @@ class StudiesActivity : AppCompatActivity() {
             addData(sheet)
 
             askForPermissions()
+        }
+
+        dersProgramiTeacherButton.setOnClickListener {
+            val newIntent = Intent(this, ProgramActivity::class.java)
+            newIntent.putExtra("studentID", studentID)
+            this.startActivity(newIntent)
         }
 
         when (secilenZamanAraligi) {
