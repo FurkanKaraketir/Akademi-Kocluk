@@ -105,7 +105,6 @@ class StudiesActivity : AppCompatActivity() {
         //Creating sheet header row
         createSheetHeader(cellStyle, sheet)
 
-        val previousRatingsButton = binding.previousRatingsButton
         val dersProgramiTeacherButton = binding.dersProgramiTeacherButton
         val gorevlerButton = binding.gorevTeacherButton
         val denemelerButton = binding.denemeTeacherButton
@@ -113,21 +112,10 @@ class StudiesActivity : AppCompatActivity() {
         val toplamSureText = binding.toplamSureText
         val toplamSoruText = binding.toplamSoruText
         val nameTextView = binding.studentNameForTeacher
-        val fiveStarButton = binding.fiveStarButton
-        val fourStarButton = binding.fourStarButton
-        val treeStarButton = binding.threeStarButton
-        val twoStarButton = binding.twoStarButton
-        val oneStarButton = binding.oneStarButton
         val zamanAraligiTextView = binding.zamanAraligiTextView
         val excelCreateButton = binding.excelStudentButton
 
         setupStudyRecyclerView(studyList)
-
-        previousRatingsButton.setOnClickListener {
-            val newIntent = Intent(this, PreviousRatingsActivity::class.java)
-            newIntent.putExtra("studentID", studentID)
-            this.startActivity(newIntent)
-        }
 
         var cal = Calendar.getInstance()
         cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -307,28 +295,6 @@ class StudiesActivity : AppCompatActivity() {
                 }
             }
 
-
-
-
-        fiveStarButton.setOnClickListener {
-            starFun(5)
-        }
-        fourStarButton.setOnClickListener {
-            starFun(4)
-        }
-
-        treeStarButton.setOnClickListener {
-            starFun(3)
-        }
-
-        twoStarButton.setOnClickListener {
-            starFun(2)
-        }
-
-        oneStarButton.setOnClickListener {
-            starFun(1)
-        }
-
         hedefTeacherButton.setOnClickListener {
             val intent2 = Intent(this, GoalsActivity::class.java)
             intent2.putExtra("studentID", studentID)
@@ -366,68 +332,6 @@ class StudiesActivity : AppCompatActivity() {
     }
 
     private fun Float.format(digits: Int) = "%.${digits}f".format(this)
-
-    private fun starFun(yildisSayisi: Int) {
-
-        val now = Calendar.getInstance()
-
-
-        val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("Çalışma Durumu")
-        alertDialog.setMessage("Çalışma Durumunu $yildisSayisi Yıldız Olarak Değerlendirmek İstiyor musunuz?")
-        alertDialog.setPositiveButton("$yildisSayisi Yıldız") { _, _ ->
-
-            if (secilenZamanAraligi == "Bugün") {
-                val degerlendirmeHash = hashMapOf(
-                    "yildizSayisi" to yildisSayisi,
-                    "time" to now.time,
-                    "degerlendirmeDate" to now.time
-                )
-
-                db.collection("School").document(kurumKodu.toString()).collection("Student")
-                    .document(studentID).collection("Degerlendirme").document()
-                    .set(degerlendirmeHash).addOnSuccessListener {
-                        val notificationsSender = FcmNotificationsSenderService(
-                            "/topics/$studentID",
-                            "Çalışmanızın Durumu",
-                            "Çalışmanızın Durumu $yildisSayisi Yıldız Olarak Değerlendirildi. \nÇalışma Tarihi: $secilenZamanAraligi",
-                            this
-                        )
-                        notificationsSender.sendNotifications()
-                        Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
-
-                    }
-            } else {
-                now.add(Calendar.DAY_OF_YEAR, -1)
-                val degerlendirmeHash = hashMapOf(
-                    "yildizSayisi" to yildisSayisi,
-                    "time" to Calendar.getInstance().time,
-                    "degerlendirmeDate" to now.time
-                )
-
-                db.collection("School").document(kurumKodu.toString()).collection("Student")
-                    .document(studentID).collection("Degerlendirme").document()
-                    .set(degerlendirmeHash).addOnSuccessListener {
-                        val notificationsSender = FcmNotificationsSenderService(
-                            "/topics/$studentID",
-                            "Çalışmanızın Durumu",
-                            "Çalışmanızın Durumu $yildisSayisi Yıldız Olarak Değerlendirildi. \nÇalışma Tarihi: $secilenZamanAraligi",
-                            this
-                        )
-                        notificationsSender.sendNotifications()
-                        Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
-
-                    }
-            }
-
-        }
-        alertDialog.setNegativeButton("İptal") { _, _ ->
-
-        }
-        alertDialog.show()
-
-
-    }
 
     @SuppressLint("Range", "Recycle", "SimpleDateFormat")
     private fun createExcel() {

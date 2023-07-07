@@ -19,8 +19,8 @@ android {
         applicationId "com.karaketir.akademi"
         minSdk 22
         targetSdk 33
-        versionCode 11
-        versionName "v0.1.1"
+        versionCode 12
+        versionName "v0.1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

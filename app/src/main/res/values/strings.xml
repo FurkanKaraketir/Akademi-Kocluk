@@ -115,19 +115,17 @@
     <string name="de_erlendirmeler">Değerlendirmeler</string>
     <string name="deneme_son_tarih">Bitiş Tarihi:</string>
     <string name="sonu_lar_g_r_nt_lemek_in_deneme_smine_t_klay_n">Sonuçları Görüntülemek İçin Deneme İsmine Tıklayın</string>
-
     <string name="sample_using_cropimageview">Sample using CropImageView</string>
     <string name="sample_of_customactivity">Sample of CustomActivity</string>
     <string name="sample_calling_cropimage">Sample calling CropImage</string>
     <string name="haftal_k_hedef_ekle_d_zenle">Haftalık Hedef Ekle/Düzenle</string>
     <string name="excel_tablosu_olu_tur">Excel Tablosu Oluştur</string>
     <string name="renci_s_ralamas">Öğrenci Sıralaması</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="yelik_lemleri">Üyelik İşlemleri</string>
     <string name="furkan_karaketir_taraf_ndan_geli_tirildi">Furkan Karaketir Tarafından Geliştirildi</string>
     <string name="kaydet">Kaydet</string>
-    <string name="ders_program">Ders Programı</string>
+    <string name="ders_program">Çalışma Programı</string>
     <string name="pazartesi">Pazartesi</string>
     <string name="sal">Salı</string>
     <string name="ar_amba">Çarşamba</string>

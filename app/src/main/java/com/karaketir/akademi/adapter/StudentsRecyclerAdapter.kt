@@ -9,13 +9,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.karaketir.akademi.R
 import com.karaketir.akademi.StudiesActivity
 import com.karaketir.akademi.databinding.StudentRowBinding
 import com.karaketir.akademi.models.Student
-import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 open class StudentsRecyclerAdapter(
     private val studentList: ArrayList<Student>, private val secilenZaman: String
@@ -200,71 +198,6 @@ open class StudentsRecyclerAdapter(
                                 binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_error_outline_24)
                             }
 
-                        }
-
-                    db.collection("School").document(kurumKodu.toString()).collection("Student")
-                        .document(myItem.id).collection("Degerlendirme")
-                        .orderBy("degerlendirmeDate", Query.Direction.DESCENDING).limit(1)
-                        .addSnapshotListener { value, error ->
-
-                            if (error != null) {
-                                println(error.localizedMessage)
-                            }
-
-                            if (value != null) {
-                                if (value.isEmpty) {
-                                    binding.fiveStarButton.visibility = View.GONE
-                                } else {
-                                    binding.fiveStarButton.visibility = View.VISIBLE
-                                    for (i in value) {
-                                        val tarih =
-                                            i.get("degerlendirmeDate") as com.google.firebase.Timestamp
-                                        val dateFormated =
-                                            SimpleDateFormat("dd/MM/yyyy").format(tarih.toDate())
-                                        binding.degerlendirmeDate.text = dateFormated
-                                        when (i.get("yildizSayisi").toString().toInt()) {
-                                            5 -> {
-                                                binding.starTwo.visibility = View.VISIBLE
-                                                binding.starThree.visibility = View.VISIBLE
-                                                binding.starFour.visibility = View.VISIBLE
-                                                binding.starFive.visibility = View.VISIBLE
-                                            }
-
-                                            4 -> {
-                                                binding.starTwo.visibility = View.VISIBLE
-                                                binding.starThree.visibility = View.VISIBLE
-                                                binding.starFour.visibility = View.VISIBLE
-                                                binding.starFive.visibility = View.GONE
-                                            }
-
-                                            3 -> {
-                                                binding.starTwo.visibility = View.VISIBLE
-                                                binding.starThree.visibility = View.VISIBLE
-                                                binding.starFour.visibility = View.GONE
-                                                binding.starFive.visibility = View.GONE
-
-                                            }
-
-                                            2 -> {
-                                                binding.starTwo.visibility = View.VISIBLE
-                                                binding.starThree.visibility = View.GONE
-                                                binding.starFour.visibility = View.GONE
-                                                binding.starFive.visibility = View.GONE
-                                            }
-
-                                            1 -> {
-                                                binding.starTwo.visibility = View.GONE
-                                                binding.starThree.visibility = View.GONE
-                                                binding.starFour.visibility = View.GONE
-                                                binding.starFive.visibility = View.GONE
-                                            }
-                                        }
-                                    }
-                                }
-
-                            } else {
-                                binding.fiveStarButton.visibility = View.GONE
-                            }
                         }
 
                 }
