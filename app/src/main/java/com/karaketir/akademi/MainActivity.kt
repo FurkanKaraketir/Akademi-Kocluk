@@ -66,8 +66,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerViewPreviousStudies: RecyclerView
     private lateinit var recyclerViewMyStudents: RecyclerView
     private lateinit var db: FirebaseFirestore
+    private var raporGondermeyenList = ArrayList<Student>()
     private lateinit var recyclerViewPreviousStudiesAdapter: StudiesRecyclerAdapter
     private lateinit var recyclerViewMyStudentsRecyclerAdapter: StudentsRecyclerAdapter
+    private var kurumKodu = 763455
     private val handler = Handler(Looper.getMainLooper())
     private val workbook = XSSFWorkbook()
     private var studyList = ArrayList<Study>()
@@ -173,6 +175,7 @@ class MainActivity : AppCompatActivity() {
         val updateButton = binding.updateButton
         val excelButton = binding.excelButton
         val dersProgramiButton = binding.dersProgramiButton
+        val noReportButton = binding.noReportButton
 
 
         developerButton.setOnClickListener {
@@ -281,11 +284,9 @@ class MainActivity : AppCompatActivity() {
         var visible = false
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
             nameAndSurnameTextView.text = "Merhaba: " + it.get("nameAndSurname").toString()
-            val kurumKodu = it.get("kurumKodu")?.toString()?.toInt()
+            kurumKodu = it.get("kurumKodu")?.toString()?.toInt()!!
 
-            if (kurumKodu != null) {
-                currentKurumKodu = kurumKodu
-            }
+            currentKurumKodu = kurumKodu
 
 
             TransitionManager.beginDelayedTransition(transitionsContainer)
@@ -331,6 +332,7 @@ class MainActivity : AppCompatActivity() {
                 recyclerViewPreviousStudies.visibility = View.VISIBLE
                 istatistikButton.visibility = View.GONE
                 allStudentsBtn.visibility = View.GONE
+                noReportButton.visibility = View.GONE
                 gorevButton.visibility = View.VISIBLE
 
                 contentTextView.text = "Son 7 Gün İçindeki\nÇalışmalarım"
@@ -396,6 +398,7 @@ class MainActivity : AppCompatActivity() {
                 teacherDenemeButton.visibility = View.VISIBLE
                 allStudentsBtn.visibility = View.VISIBLE
                 addStudyButton.visibility = View.GONE
+                noReportButton.visibility = View.VISIBLE
                 istatistikButton.visibility = View.VISIBLE
                 gorevButton.visibility = View.GONE
                 gradeSpinnerLayout.visibility = View.VISIBLE
@@ -582,6 +585,145 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, DutiesActivity::class.java)
             intent.putExtra("studentID", auth.uid)
             this.startActivity(intent)
+        }
+
+        noReportButton.setOnClickListener {
+            val myIntent = Intent(this, NoReportActivity::class.java)
+
+            var cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            var baslangicTarihi = cal.time
+            var bitisTarihi = cal.time
+
+
+            when (secilenZaman) {
+
+                "Bugün" -> {
+                    baslangicTarihi = cal.time
+
+
+                    cal.add(Calendar.DAY_OF_YEAR, 1)
+                    bitisTarihi = cal.time
+                }
+
+                "Dün" -> {
+                    bitisTarihi = cal.time
+
+                    cal.add(Calendar.DAY_OF_YEAR, -1)
+                    baslangicTarihi = cal.time
+
+                }
+
+                "Bu Hafta" -> {
+                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                    baslangicTarihi = cal.time
+
+
+                    cal.add(Calendar.WEEK_OF_YEAR, 1)
+                    bitisTarihi = cal.time
+
+                }
+
+                "Geçen Hafta" -> {
+                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                    bitisTarihi = cal.time
+
+
+                    cal.add(Calendar.DAY_OF_YEAR, -7)
+                    baslangicTarihi = cal.time
+
+
+                }
+
+                "Bu Ay" -> {
+
+                    cal = Calendar.getInstance()
+                    cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                    cal.clear(Calendar.MINUTE)
+                    cal.clear(Calendar.SECOND)
+                    cal.clear(Calendar.MILLISECOND)
+
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    baslangicTarihi = cal.time
+
+
+                    cal.add(Calendar.MONTH, 1)
+                    bitisTarihi = cal.time
+
+
+                }
+
+                "Geçen Ay" -> {
+                    cal = Calendar.getInstance()
+                    cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                    cal.clear(Calendar.MINUTE)
+                    cal.clear(Calendar.SECOND)
+                    cal.clear(Calendar.MILLISECOND)
+
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    bitisTarihi = cal.time
+
+
+                    cal.add(Calendar.MONTH, -1)
+                    baslangicTarihi = cal.time
+
+                }
+
+                "Tüm Zamanlar" -> {
+                    cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
+                    baslangicTarihi = cal.time
+
+
+                    cal.set(2077, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
+                    bitisTarihi = cal.time
+
+                }
+            }
+            raporGondermeyenList.clear()
+
+            var my = 0
+            for (i in studentList) {
+
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(i.id).collection("Studies")
+                    .whereGreaterThan("timestamp", baslangicTarihi)
+                    .whereLessThan("timestamp", bitisTarihi).addSnapshotListener { value, error ->
+                        if (error != null) {
+                            println(error.localizedMessage)
+                        }
+
+                        if (value != null) {
+
+                            if (value.isEmpty) {
+                                raporGondermeyenList.add(i)
+                            }
+
+                        } else {
+                            raporGondermeyenList.add(i)
+                        }
+
+                        my += 1
+                        if (my == studentList.size) {
+                            println(raporGondermeyenList.size)
+                            for (a in raporGondermeyenList) {
+                                println(a.studentName)
+                            }
+                            myIntent.putExtra("list", raporGondermeyenList)
+                            myIntent.putExtra("secilenZaman", secilenZaman)
+                            this@MainActivity.startActivity(myIntent)
+                        }
+
+                    }
+            }
+
+
         }
 
         handler.post(object : Runnable {

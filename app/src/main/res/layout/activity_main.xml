@@ -125,6 +125,17 @@
                                 app:icon="@drawable/baseline_table_chart_24" />
 
                             <Button
+                                android:id="@+id/noReportButton"
+                                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:text="@string/rapor_g_ndermeyenler"
+                                android:visibility="gone"
+                                app:icon="@drawable/ic_baseline_error_outline_24">
+
+                            </Button>
+                            <Button
                                 android:id="@+id/studentDenemeButton"
                                 style="@style/Widget.Material3.Button.ElevatedButton.Icon"
                                 android:layout_width="wrap_content"
