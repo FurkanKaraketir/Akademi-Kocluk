@@ -133,7 +133,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             pazartesiList.add(newDers)
                             recyclerPazartesiAdapter.notifyDataSetChanged()
@@ -155,7 +163,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             saliList.add(newDers)
                             recyclerSaliAdapter.notifyDataSetChanged()
@@ -180,7 +196,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             carsambaList.add(newDers)
                             recyclerCarsambaAdapter.notifyDataSetChanged()
@@ -204,7 +228,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             persembeList.add(newDers)
                             recyclerPersembeAdapter.notifyDataSetChanged()
@@ -229,7 +261,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             cumaList.add(newDers)
                             recyclerCumaAdapter.notifyDataSetChanged()
@@ -253,7 +293,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             cumartesiList.add(newDers)
                             recyclerCumartesiAdapter.notifyDataSetChanged()
@@ -277,7 +325,15 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
                             val newDersNumara = i.get("id").toString()
-                            val newDers = Ders(newDersAdi, newDersTuru, newDersSure, newDersNumara)
+                            val newGun = i.get("dersGun").toString()
+                            val newDers = Ders(
+                                newDersAdi,
+                                newDersTuru,
+                                newDersSure,
+                                newDersNumara,
+                                studentID,
+                                newGun
+                            )
 
                             pazarList.add(newDers)
                             recyclerPazarAdapter.notifyDataSetChanged()

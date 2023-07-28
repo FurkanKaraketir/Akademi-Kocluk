@@ -155,6 +155,7 @@ class AddProgramActivity : AppCompatActivity() {
 
             val data = hashMapOf(
                 "id" to (sayi).toString(),
+                "dersGun" to gun,
                 "dersAdi" to secilenDers,
                 "dersTuru" to secilenTur,
                 "dersSure" to dakika
