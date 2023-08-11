@@ -56,6 +56,7 @@ class RegisterActivity : AppCompatActivity() {
         val gradeText = binding.classEditText
         val emailEditText = binding.emailRegisterEditText
         val passwordEditText = binding.passwordRegisterEditText
+        val codeEditText = binding.passwordRegisterCode
         val nameAndSurnameEditText = binding.nameAndSurnameEditText
         val kullanici = binding.kullanimBtn
         val gizlilik = binding.gizBtn
@@ -93,20 +94,32 @@ class RegisterActivity : AppCompatActivity() {
                             if (nameAndSurnameEditText.text.toString().isNotEmpty()) {
                                 nameAndSurnameEditText.error = null
 
+                                if (codeEditText.text.toString().isNotEmpty()) {
+                                    codeEditText.error = null
+
+                                    if (codeEditText.text.toString() == "hxoabibk") {
+
+                                        nameAndSurname = nameAndSurnameEditText.text.toString()
+
+                                        grade = try {
+                                            gradeText.text.toString().toInt()
+                                        } catch (e: Exception) {
+                                            0
+                                        }
+
+                                        signUp(
+                                            emailEditText.text.toString(),
+                                            passwordEditText.text.toString()
+                                        )
+                                    } else {
+                                        codeEditText.error = "Hatalı Giriş Kodu"
+
+                                    }
 
 
-
-                                nameAndSurname = nameAndSurnameEditText.text.toString()
-
-                                grade = try {
-                                    gradeText.text.toString().toInt()
-                                } catch (e: Exception) {
-                                    0
+                                } else {
+                                    codeEditText.error = "Bu Alan Boş Bırakılamaz"
                                 }
-
-                                signUp(
-                                    emailEditText.text.toString(), passwordEditText.text.toString()
-                                )
 
 
                             } else {

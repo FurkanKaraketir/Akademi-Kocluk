@@ -137,4 +137,5 @@
     <string name="g_n_se_iniz">Gün Seçiniz</string>
     <string name="ka_nc_ders">Kaçıncı Ders?</string>
     <string name="rapor_g_ndermeyenler">Rapor Göndermeyenler</string>
+    <string name="giri_kodu">Giriş Kodu</string>
 </resources>
