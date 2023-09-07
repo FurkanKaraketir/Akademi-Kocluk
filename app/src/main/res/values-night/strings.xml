@@ -137,4 +137,6 @@
     <string name="ka_nc_ders">Kaçıncı Ders?</string>
     <string name="rapor_g_ndermeyenler">Rapor Göndermeyenler</string>
     <string name="giri_kodu">Giriş Kodu</string>
+    <string name="ders_se">Ders Seç</string>
+    <string name="konular">Konular</string>
 </resources>

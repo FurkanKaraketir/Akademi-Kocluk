@@ -175,7 +175,13 @@ class MainActivity : AppCompatActivity() {
         val excelButton = binding.excelButton
         val dersProgramiButton = binding.dersProgramiButton
         val noReportButton = binding.noReportButton
+        val subjectsButton = binding.konuButton
 
+        subjectsButton.setOnClickListener {
+            val newIntent = Intent(this, SubjectCompActivity::class.java)
+            newIntent.putExtra("studentID", auth.uid.toString())
+            this.startActivity(newIntent)
+        }
 
         developerButton.setOnClickListener {
             openLink(
@@ -326,6 +332,7 @@ class MainActivity : AppCompatActivity() {
                     gradeSpinnerLayout.visibility = View.GONE
                     topStudentsButton.visibility = View.GONE
                     teacherSpinnerLayout.visibility = View.GONE
+                    subjectsButton.visibility = View.VISIBLE
                     studySearchEditText.visibility = View.VISIBLE
                     searchEditText.visibility = View.GONE
                     studentDenemeButton.visibility = View.VISIBLE
@@ -402,6 +409,7 @@ class MainActivity : AppCompatActivity() {
                     addStudyButton.visibility = View.GONE
                     noReportButton.visibility = View.VISIBLE
                     istatistikButton.visibility = View.VISIBLE
+                    subjectsButton.visibility = View.GONE
                     gorevButton.visibility = View.GONE
                     gradeSpinnerLayout.visibility = View.VISIBLE
                     contentTextView.text = "Öğrencilerim"

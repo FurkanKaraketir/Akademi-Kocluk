@@ -114,6 +114,13 @@ class StudiesActivity : AppCompatActivity() {
         val nameTextView = binding.studentNameForTeacher
         val zamanAraligiTextView = binding.zamanAraligiTextView
         val excelCreateButton = binding.excelStudentButton
+        val konular = binding.tamamlananKonular
+
+        konular.setOnClickListener {
+            val newIntent = Intent(this, SubjectCompActivity::class.java)
+            newIntent.putExtra("studentID", studentID)
+            this.startActivity(newIntent)
+        }
 
         setupStudyRecyclerView(studyList)
 
