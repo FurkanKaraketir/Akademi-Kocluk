@@ -22,6 +22,7 @@ class GoalsRecyclerAdapter(private val goalList: ArrayList<Goal>) :
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
 
+    private val kurumKodu = 763455
 
     class GoalHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = GoalGridRowBinding.bind(itemView)
@@ -65,7 +66,7 @@ class GoalsRecyclerAdapter(private val goalList: ArrayList<Goal>) :
                 var cozulenSoru = 0
 
                 db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    val kurumKodu = it.get("kurumKodu").toString().toInt()
+
                     if (it.get("personType").toString() == "Student") {
                         binding.deleteGoalButton.visibility = View.GONE
                     } else {

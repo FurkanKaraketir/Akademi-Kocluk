@@ -63,7 +63,7 @@ class GoalsActivity : AppCompatActivity() {
 
 
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            val kurumKodu = it.get("kurumKodu").toString()
+            val kurumKodu = 763455
 
             if (it.get("personType") == "Student") {
                 addGoalButton.visibility = View.GONE
@@ -71,8 +71,9 @@ class GoalsActivity : AppCompatActivity() {
                 addGoalButton.visibility = View.VISIBLE
             }
 
-            db.collection("School").document(kurumKodu).collection("Student").document(studentID)
-                .collection("HaftalikHedefler").addSnapshotListener { value, _ ->
+            db.collection("School").document(kurumKodu.toString()).collection("Student")
+                .document(studentID).collection("HaftalikHedefler")
+                .addSnapshotListener { value, _ ->
                     if (value != null) {
                         goalList.clear()
                         for (document in value) {

@@ -87,82 +87,74 @@ class AllStudentsActivity : AppCompatActivity() {
             }
 
         })
-        var kurumKodu: Int
+        val kurumKodu = 763455
 
 
+        val gradeAdapter = ArrayAdapter(
+            this@AllStudentsActivity, android.R.layout.simple_spinner_item, gradeList
+        )
+        gradeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        gradeSpinner.adapter = gradeAdapter
+        gradeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                val secilenGrade = gradeList[p2]
+                if (secilenGrade == "Bütün Sınıflar") {
+                    db.collection("School").document(kurumKodu.toString()).collection("Student")
+                        .whereEqualTo("teacher", "").addSnapshotListener { documents, _ ->
 
+                            studentList.clear()
+                            if (documents != null) {
+                                for (document in documents) {
+                                    val studentGrade = document.get("grade").toString().toInt()
+                                    val studentName = document.get("nameAndSurname").toString()
+                                    val teacher = document.get("teacher").toString()
+                                    val id = document.get("id").toString()
+                                    val currentStudent =
+                                        Student(studentName, teacher, id, studentGrade)
+                                    studentList.add(currentStudent)
 
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            kurumKodu = it.get("kurumKodu").toString().toInt()
-
-            val gradeAdapter = ArrayAdapter(
-                this@AllStudentsActivity, android.R.layout.simple_spinner_item, gradeList
-            )
-            gradeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            gradeSpinner.adapter = gradeAdapter
-            gradeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                    val secilenGrade = gradeList[p2]
-                    if (secilenGrade == "Bütün Sınıflar") {
-                        db.collection("School").document(kurumKodu.toString()).collection("Student")
-                            .whereEqualTo("teacher", "").addSnapshotListener { documents, _ ->
-
-                                studentList.clear()
-                                if (documents != null) {
-                                    for (document in documents) {
-                                        val studentGrade = document.get("grade").toString().toInt()
-                                        val studentName = document.get("nameAndSurname").toString()
-                                        val teacher = document.get("teacher").toString()
-                                        val id = document.get("id").toString()
-                                        val currentStudent =
-                                            Student(studentName, teacher, id, studentGrade)
-                                        studentList.add(currentStudent)
-
-                                    }
                                 }
-                                studentList.sortBy { a ->
-                                    a.studentName
-                                }
-                                setupRecyclerView(studentList)
-
-                                recyclerViewAllStudentsAdapter.notifyDataSetChanged()
-
                             }
-                    } else {
-                        db.collection("School").document(kurumKodu.toString()).collection("Student")
-                            .whereEqualTo("teacher", "").whereEqualTo("grade", secilenGrade.toInt())
-                            .addSnapshotListener { documents, _ ->
-
-                                studentList.clear()
-                                if (documents != null) {
-                                    for (document in documents) {
-                                        val studentGrade = document.get("grade").toString().toInt()
-                                        val studentName = document.get("nameAndSurname").toString()
-                                        val teacher = document.get("teacher").toString()
-                                        val id = document.get("id").toString()
-                                        val currentStudent =
-                                            Student(studentName, teacher, id, studentGrade)
-                                        studentList.add(currentStudent)
-
-                                    }
-                                }
-                                studentList.sortBy { a ->
-                                    a.studentName
-                                }
-                                setupRecyclerView(studentList)
-
-                                recyclerViewAllStudentsAdapter.notifyDataSetChanged()
-
+                            studentList.sortBy { a ->
+                                a.studentName
                             }
-                    }
+                            setupRecyclerView(studentList)
+
+                            recyclerViewAllStudentsAdapter.notifyDataSetChanged()
+
+                        }
+                } else {
+                    db.collection("School").document(kurumKodu.toString()).collection("Student")
+                        .whereEqualTo("teacher", "").whereEqualTo("grade", secilenGrade.toInt())
+                        .addSnapshotListener { documents, _ ->
+
+                            studentList.clear()
+                            if (documents != null) {
+                                for (document in documents) {
+                                    val studentGrade = document.get("grade").toString().toInt()
+                                    val studentName = document.get("nameAndSurname").toString()
+                                    val teacher = document.get("teacher").toString()
+                                    val id = document.get("id").toString()
+                                    val currentStudent =
+                                        Student(studentName, teacher, id, studentGrade)
+                                    studentList.add(currentStudent)
+
+                                }
+                            }
+                            studentList.sortBy { a ->
+                                a.studentName
+                            }
+                            setupRecyclerView(studentList)
+
+                            recyclerViewAllStudentsAdapter.notifyDataSetChanged()
+
+                        }
                 }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                }
-
             }
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
 
         }
 

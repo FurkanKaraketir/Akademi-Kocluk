@@ -25,7 +25,7 @@ class TopStudentsActivity : AppCompatActivity() {
     private val mainHash = hashMapOf<String, Int>()
     private val idList = ArrayList<String>()
     private val studentList = ArrayList<StudentPlacment>()
-    private var kurumKodu = 0
+    private val kurumKodu = 763455
     private var arrayCount = 0
     private var check = false
     private val handler = Handler(Looper.getMainLooper())
@@ -49,13 +49,12 @@ class TopStudentsActivity : AppCompatActivity() {
         binding.studentPlacementRecyclerView.adapter = studentsRecyclerAdapter
 
 
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            kurumKodu = it.get("kurumKodu").toString().toInt()
-            TransitionManager.beginDelayedTransition(binding.transitionsContainer)
-            binding.progressCircular.visibility = View.VISIBLE
-            siralamaHazirla()
 
-        }
+        TransitionManager.beginDelayedTransition(binding.transitionsContainer)
+        binding.progressCircular.visibility = View.VISIBLE
+        siralamaHazirla()
+
+
 
 
         handler.post(object : Runnable {
@@ -94,7 +93,6 @@ class TopStudentsActivity : AppCompatActivity() {
 
     private fun siralamaHazirla() {
 
-        println(kurumKodu)
         db.collection("School").document(kurumKodu.toString()).collection("Student").get()
             .addOnSuccessListener {
 

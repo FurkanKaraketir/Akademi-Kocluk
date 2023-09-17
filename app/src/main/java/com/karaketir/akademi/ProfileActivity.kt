@@ -80,6 +80,7 @@ class ProfileActivity : AppCompatActivity() {
             val intent = Intent(this, PaywallActivity::class.java)
             this.startActivity(intent)
         }
+        val kurumKodu = 763455
 
         saveButton.setOnClickListener {
 
@@ -88,7 +89,6 @@ class ProfileActivity : AppCompatActivity() {
             alertDialog.setMessage("Değişiklikleri Kaydetmek İstediğinize Emin misiniz?")
             alertDialog.setPositiveButton("Kaydet") { _, _ ->
                 db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    val kurumKodu = it.get("kurumKodu").toString()
                     val personType = it.get("personType").toString()
                     if (nameChangeEditText.text.toString().isNotEmpty()) {
 
@@ -96,8 +96,8 @@ class ProfileActivity : AppCompatActivity() {
                         db.collection("User").document(auth.uid.toString())
                             .update("nameAndSurname", nameChangeEditText.text.toString())
 
-                        db.collection("School").document(kurumKodu).collection(personType)
-                            .document(auth.uid.toString())
+                        db.collection("School").document(kurumKodu.toString())
+                            .collection(personType).document(auth.uid.toString())
                             .update("nameAndSurname", nameChangeEditText.text.toString())
 
 
@@ -106,8 +106,8 @@ class ProfileActivity : AppCompatActivity() {
                         db.collection("User").document(auth.uid.toString())
                             .update("grade", gradeChangeEditText.text.toString().toInt())
 
-                        db.collection("School").document(kurumKodu).collection(personType)
-                            .document(auth.uid.toString())
+                        db.collection("School").document(kurumKodu.toString())
+                            .collection(personType).document(auth.uid.toString())
                             .update("grade", gradeChangeEditText.text.toString().toInt())
                     }
                     Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
@@ -129,10 +129,9 @@ class ProfileActivity : AppCompatActivity() {
             alertDialog.setMessage("Hesabınızı Silmek İstediğinize Emin misiniz?\nBu İşlem Geri Alınamaz!!")
             alertDialog.setPositiveButton("Sil") { _, _ ->
                 db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    val kurumKodu = it.get("kurumKodu").toString()
                     val personType = it.get("personType").toString()
 
-                    db.collection("School").document(kurumKodu).collection(personType)
+                    db.collection("School").document(kurumKodu.toString()).collection(personType)
                         .document(auth.uid.toString()).delete().addOnSuccessListener {
                             db.collection("User").document(auth.uid.toString()).delete()
                                 .addOnSuccessListener {

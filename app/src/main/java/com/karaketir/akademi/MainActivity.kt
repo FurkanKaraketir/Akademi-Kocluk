@@ -291,11 +291,7 @@ class MainActivity : AppCompatActivity() {
 
             db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
                 nameAndSurnameTextView.text = "Merhaba: " + it.get("nameAndSurname").toString()
-                try {
-                    kurumKodu = it.get("kurumKodu")?.toString()?.toInt()!!
-                } catch (eP: Exception) {
-                    println(eP.localizedMessage)
-                }
+
 
                 TransitionManager.beginDelayedTransition(transitionsContainer)
                 visible = !visible
@@ -426,7 +422,6 @@ class MainActivity : AppCompatActivity() {
                             sheet,
                             secilenZaman,
                             secilenGrade,
-                            kurumKodu.toString(),
                             auth,
                             db,
                             this,

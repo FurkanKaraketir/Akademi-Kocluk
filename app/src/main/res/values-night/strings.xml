@@ -139,4 +139,5 @@
     <string name="giri_kodu">Giriş Kodu</string>
     <string name="ders_se">Ders Seç</string>
     <string name="konular">Konular</string>
+    <string name="ka_soru">Kaç Soru?</string>
 </resources>

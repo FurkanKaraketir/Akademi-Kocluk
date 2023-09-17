@@ -116,12 +116,14 @@ class DenemelerActivity : AppCompatActivity() {
                         cal.add(Calendar.DAY_OF_YEAR, 1)
                         bitisTarihi = cal.time
                     }
+
                     1 -> {
                         bitisTarihi = cal.time
 
                         cal.add(Calendar.DAY_OF_YEAR, -1)
                         baslangicTarihi = cal.time
                     }
+
                     2 -> {
                         cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                         baslangicTarihi = cal.time
@@ -131,6 +133,7 @@ class DenemelerActivity : AppCompatActivity() {
                         bitisTarihi = cal.time
 
                     }
+
                     3 -> {
                         cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                         bitisTarihi = cal.time
@@ -141,6 +144,7 @@ class DenemelerActivity : AppCompatActivity() {
 
 
                     }
+
                     4 -> {
 
                         cal = Calendar.getInstance()
@@ -159,6 +163,7 @@ class DenemelerActivity : AppCompatActivity() {
 
 
                     }
+
                     5 -> {
                         cal = Calendar.getInstance()
                         cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -192,129 +197,118 @@ class DenemelerActivity : AppCompatActivity() {
                 turSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
                     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                        var kurumKodu: Int
-
-                        db.collection("User").document(auth.uid.toString()).get()
-                            .addOnSuccessListener {
-                                kurumKodu = it.get("kurumKodu").toString().toInt()
-                                val secilenTur = turler[p2]
-                                if (secilenTur != "Tüm Denemeler") {
+                        val kurumKodu = 763455
 
 
-                                    db.collection("School").document(kurumKodu.toString())
-                                        .collection("Student").document(studentID)
-                                        .collection("Denemeler")
-                                        .whereEqualTo("denemeTür", secilenTur)
-                                        .whereGreaterThan("denemeTarihi", baslangicTarihi)
-                                        .whereLessThan("denemeTarihi", bitisTarihi)
-                                        .orderBy("denemeTarihi", Query.Direction.DESCENDING)
-                                        .addSnapshotListener { value, error ->
+                        val secilenTur = turler[p2]
+                        if (secilenTur != "Tüm Denemeler") {
 
-                                            if (error != null) {
-                                                println(error.localizedMessage)
+
+                            db.collection("School").document(kurumKodu.toString())
+                                .collection("Student").document(studentID).collection("Denemeler")
+                                .whereEqualTo("denemeTür", secilenTur)
+                                .whereGreaterThan("denemeTarihi", baslangicTarihi)
+                                .whereLessThan("denemeTarihi", bitisTarihi)
+                                .orderBy("denemeTarihi", Query.Direction.DESCENDING)
+                                .addSnapshotListener { value, error ->
+
+                                    if (error != null) {
+                                        println(error.localizedMessage)
+                                    }
+                                    if (value != null) {
+                                        denemeList.clear()
+                                        if (!value.isEmpty) {
+                                            for (document in value) {
+                                                val denemeID = document.id
+                                                val denemeAdi = document.get("denemeAdi").toString()
+                                                val denemeToplamNet =
+                                                    document.get("toplamNet").toString().toFloat()
+                                                val denemeTarihi =
+                                                    document.get("denemeTarihi") as Timestamp
+                                                val denemeTur = document.get("denemeTür").toString()
+
+                                                val currentDeneme = Deneme(
+                                                    denemeID,
+                                                    denemeAdi,
+                                                    denemeToplamNet,
+                                                    denemeTarihi,
+                                                    studentID,
+                                                    denemeTur
+                                                )
+                                                denemeList.add(currentDeneme)
                                             }
-                                            if (value != null) {
-                                                denemeList.clear()
-                                                if (!value.isEmpty) {
-                                                    for (document in value) {
-                                                        val denemeID = document.id
-                                                        val denemeAdi =
-                                                            document.get("denemeAdi").toString()
-                                                        val denemeToplamNet =
-                                                            document.get("toplamNet").toString()
-                                                                .toFloat()
-                                                        val denemeTarihi =
-                                                            document.get("denemeTarihi") as Timestamp
-                                                        val denemeTur =
-                                                            document.get("denemeTür").toString()
 
-                                                        val currentDeneme = Deneme(
-                                                            denemeID,
-                                                            denemeAdi,
-                                                            denemeToplamNet,
-                                                            denemeTarihi,
-                                                            studentID,
-                                                            denemeTur
-                                                        )
-                                                        denemeList.add(currentDeneme)
-                                                    }
+                                            recyclerAdapter.notifyDataSetChanged()
 
-                                                    recyclerAdapter.notifyDataSetChanged()
-
-                                                } else {
-                                                    denemeList.clear()
-                                                    recyclerAdapter.notifyDataSetChanged()
-
-                                                }
-
-
-                                            } else {
-                                                denemeList.clear()
-                                                recyclerAdapter.notifyDataSetChanged()
-
-                                            }
+                                        } else {
+                                            denemeList.clear()
+                                            recyclerAdapter.notifyDataSetChanged()
 
                                         }
 
 
-                                } else {
-                                    db.collection("School").document(kurumKodu.toString())
-                                        .collection("Student").document(studentID)
-                                        .collection("Denemeler")
-                                        .whereGreaterThan("denemeTarihi", baslangicTarihi)
-                                        .whereLessThan("denemeTarihi", bitisTarihi)
-                                        .orderBy("denemeTarihi", Query.Direction.DESCENDING)
-                                        .addSnapshotListener { value, error ->
+                                    } else {
+                                        denemeList.clear()
+                                        recyclerAdapter.notifyDataSetChanged()
 
-                                            if (error != null) {
-                                                println(error.localizedMessage)
-                                            }
-                                            if (value != null) {
-                                                denemeList.clear()
-                                                if (!value.isEmpty) {
-                                                    for (document in value) {
-                                                        val denemeID = document.id
-                                                        val denemeAdi =
-                                                            document.get("denemeAdi").toString()
-                                                        val denemeToplamNet =
-                                                            document.get("toplamNet").toString()
-                                                                .toFloat()
-                                                        val denemeTarihi =
-                                                            document.get("denemeTarihi") as Timestamp
-                                                        val denemeTur =
-                                                            document.get("denemeTür").toString()
-
-                                                        val currentDeneme = Deneme(
-                                                            denemeID,
-                                                            denemeAdi,
-                                                            denemeToplamNet,
-                                                            denemeTarihi,
-                                                            studentID,
-                                                            denemeTur
-                                                        )
-                                                        denemeList.add(currentDeneme)
-                                                    }
-
-                                                    recyclerAdapter.notifyDataSetChanged()
-
-                                                } else {
-                                                    denemeList.clear()
-                                                    recyclerAdapter.notifyDataSetChanged()
-
-                                                }
-
-
-                                            } else {
-                                                denemeList.clear()
-                                                recyclerAdapter.notifyDataSetChanged()
-
-                                            }
-
-                                        }
-
+                                    }
 
                                 }
-                            }
+
+
+                        } else {
+                            db.collection("School").document(kurumKodu.toString())
+                                .collection("Student").document(studentID).collection("Denemeler")
+                                .whereGreaterThan("denemeTarihi", baslangicTarihi)
+                                .whereLessThan("denemeTarihi", bitisTarihi)
+                                .orderBy("denemeTarihi", Query.Direction.DESCENDING)
+                                .addSnapshotListener { value, error ->
+
+                                    if (error != null) {
+                                        println(error.localizedMessage)
+                                    }
+                                    if (value != null) {
+                                        denemeList.clear()
+                                        if (!value.isEmpty) {
+                                            for (document in value) {
+                                                val denemeID = document.id
+                                                val denemeAdi = document.get("denemeAdi").toString()
+                                                val denemeToplamNet =
+                                                    document.get("toplamNet").toString().toFloat()
+                                                val denemeTarihi =
+                                                    document.get("denemeTarihi") as Timestamp
+                                                val denemeTur = document.get("denemeTür").toString()
+
+                                                val currentDeneme = Deneme(
+                                                    denemeID,
+                                                    denemeAdi,
+                                                    denemeToplamNet,
+                                                    denemeTarihi,
+                                                    studentID,
+                                                    denemeTur
+                                                )
+                                                denemeList.add(currentDeneme)
+                                            }
+
+                                            recyclerAdapter.notifyDataSetChanged()
+
+                                        } else {
+                                            denemeList.clear()
+                                            recyclerAdapter.notifyDataSetChanged()
+
+                                        }
+
+
+                                    } else {
+                                        denemeList.clear()
+                                        recyclerAdapter.notifyDataSetChanged()
+
+                                    }
+
+                                }
+
+
+                        }
 
 
                     }
@@ -325,50 +319,41 @@ class DenemelerActivity : AppCompatActivity() {
                 }
 
 
-                var kurumKodu: Int
-                db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    kurumKodu = it.get("kurumKodu").toString().toInt()
+                val kurumKodu = 763455
 
-                    db.collection("School").document(kurumKodu.toString()).collection("Student")
-                        .document(studentID).collection("Denemeler")
-                        .whereGreaterThan("denemeTarihi", baslangicTarihi)
-                        .whereLessThan("denemeTarihi", bitisTarihi)
-                        .orderBy("denemeTarihi", Query.Direction.DESCENDING)
-                        .addSnapshotListener { value, error ->
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(studentID).collection("Denemeler")
+                    .whereGreaterThan("denemeTarihi", baslangicTarihi)
+                    .whereLessThan("denemeTarihi", bitisTarihi)
+                    .orderBy("denemeTarihi", Query.Direction.DESCENDING)
+                    .addSnapshotListener { value, error ->
 
-                            if (error != null) {
-                                println(error.localizedMessage)
-                            }
-                            if (value != null) {
-                                denemeList.clear()
-                                if (!value.isEmpty) {
-                                    for (document in value) {
-                                        val denemeID = document.id
-                                        val denemeAdi = document.get("denemeAdi").toString()
-                                        val denemeToplamNet =
-                                            document.get("toplamNet").toString().toFloat()
-                                        val denemeTarihi = document.get("denemeTarihi") as Timestamp
-                                        val denemeTur = document.get("denemeTür").toString()
+                        if (error != null) {
+                            println(error.localizedMessage)
+                        }
+                        if (value != null) {
+                            denemeList.clear()
+                            if (!value.isEmpty) {
+                                for (document in value) {
+                                    val denemeID = document.id
+                                    val denemeAdi = document.get("denemeAdi").toString()
+                                    val denemeToplamNet =
+                                        document.get("toplamNet").toString().toFloat()
+                                    val denemeTarihi = document.get("denemeTarihi") as Timestamp
+                                    val denemeTur = document.get("denemeTür").toString()
 
-                                        val currentDeneme = Deneme(
-                                            denemeID,
-                                            denemeAdi,
-                                            denemeToplamNet,
-                                            denemeTarihi,
-                                            studentID,
-                                            denemeTur
-                                        )
-                                        denemeList.add(currentDeneme)
-                                    }
-
-                                    recyclerAdapter.notifyDataSetChanged()
-
-                                } else {
-                                    denemeList.clear()
-                                    recyclerAdapter.notifyDataSetChanged()
-
+                                    val currentDeneme = Deneme(
+                                        denemeID,
+                                        denemeAdi,
+                                        denemeToplamNet,
+                                        denemeTarihi,
+                                        studentID,
+                                        denemeTur
+                                    )
+                                    denemeList.add(currentDeneme)
                                 }
 
+                                recyclerAdapter.notifyDataSetChanged()
 
                             } else {
                                 denemeList.clear()
@@ -376,10 +361,16 @@ class DenemelerActivity : AppCompatActivity() {
 
                             }
 
+
+                        } else {
+                            denemeList.clear()
+                            recyclerAdapter.notifyDataSetChanged()
+
                         }
 
+                    }
 
-                }
+
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -389,40 +380,37 @@ class DenemelerActivity : AppCompatActivity() {
         }
         denemeAddButton.setOnClickListener {
 
-            db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener { user ->
-                val kurumKodu = user.get("kurumKodu").toString().toInt()
+            val kurumKodu = 763455
 
-                db.collection("School").document(kurumKodu.toString()).collection("Student")
-                    .document(studentID).get().addOnSuccessListener { student ->
-                        val teacherID = student.get("teacher").toString()
-                        if (teacherID.isNotEmpty()) {
-                            val popup = PopupMenu(applicationContext, it)
-                            //inflate menu with layout mainmenu
-                            popup.inflate(R.menu.subject_context)
-                            popup.show()
+            db.collection("School").document(kurumKodu.toString()).collection("Student")
+                .document(studentID).get().addOnSuccessListener { student ->
+                    val teacherID = student.get("teacher").toString()
+                    if (teacherID.isNotEmpty()) {
+                        val popup = PopupMenu(applicationContext, it)
+                        //inflate menu with layout mainmenu
+                        popup.inflate(R.menu.subject_context)
+                        popup.show()
 
-                            popup.setOnMenuItemClickListener { item ->
-                                if (item.itemId == R.id.TYT) {
-                                    val intent = Intent(this, EnterTytActivity::class.java)
-                                    intent.putExtra("studyType", "TYT")
-                                    this.startActivity(intent)
-                                }
-
-                                if (item.itemId == R.id.AYT) {
-                                    val intent = Intent(this, EnterTytActivity::class.java)
-                                    intent.putExtra("studyType", "AYT")
-                                    this.startActivity(intent)
-                                }
-                                false
+                        popup.setOnMenuItemClickListener { item ->
+                            if (item.itemId == R.id.TYT) {
+                                val intent = Intent(this, EnterTytActivity::class.java)
+                                intent.putExtra("studyType", "TYT")
+                                this.startActivity(intent)
                             }
-                        } else {
-                            Toast.makeText(
-                                this, "Koç Öğretmeniniz Bulunmamaktadır.", Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
 
-            }
+                            if (item.itemId == R.id.AYT) {
+                                val intent = Intent(this, EnterTytActivity::class.java)
+                                intent.putExtra("studyType", "AYT")
+                                this.startActivity(intent)
+                            }
+                            false
+                        }
+                    } else {
+                        Toast.makeText(
+                            this, "Koç Öğretmeniniz Bulunmamaktadır.", Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
 
 
         }

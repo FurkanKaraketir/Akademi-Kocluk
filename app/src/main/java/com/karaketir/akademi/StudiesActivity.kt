@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.karaketir.akademi
 
 import android.Manifest
@@ -17,7 +15,6 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -31,7 +28,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.karaketir.akademi.adapter.ClassesAdapter
 import com.karaketir.akademi.databinding.ActivityStudiesBinding
-import com.karaketir.akademi.services.FcmNotificationsSenderService
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.ss.util.CellUtil
 import org.apache.poi.xssf.usermodel.IndexedColorMap
@@ -43,7 +39,6 @@ import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class StudiesActivity : AppCompatActivity() {
@@ -78,7 +73,7 @@ class StudiesActivity : AppCompatActivity() {
     private var secilenZamanAraligi = ""
     private var studentID = ""
     var name = ""
-    private var kurumKodu = 0
+    private val kurumKodu = 763455
     private lateinit var layoutManager: GridLayoutManager
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -89,9 +84,6 @@ class StudiesActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
         recyclerViewStudies = binding.recyclerViewStudies
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            kurumKodu = it.get("kurumKodu").toString().toInt()
-        }
         layoutManager = GridLayoutManager(applicationContext, 2)
         val intent = intent
         studentID = intent.getStringExtra("studentID").toString()
@@ -251,51 +243,46 @@ class StudiesActivity : AppCompatActivity() {
                     for (i in classList) {
                         var iCalisma = 0
                         var iCozulen = 0
-                        db.collection("User").document(auth.uid.toString()).get()
-                            .addOnSuccessListener {
-                                kurumKodu = it.get("kurumKodu")?.toString()?.toInt()!!
-                                db.collection("School").document(kurumKodu.toString())
-                                    .collection("Student").document(studentID).collection("Studies")
-                                    .whereEqualTo("dersAdi", i)
-                                    .whereGreaterThan("timestamp", baslangicTarihi)
-                                    .whereLessThan("timestamp", bitisTarihi)
-                                    .addSnapshotListener { value, error ->
-                                        if (error != null) {
-                                            println(error.localizedMessage)
-                                        }
 
-                                        if (value != null) {
-                                            for (study in value) {
-                                                iCalisma += study.get("toplamCalisma").toString()
-                                                    .toInt()
-                                                iCozulen += study.get("çözülenSoru").toString()
-                                                    .toInt()
-                                            }
-                                        }
-                                        toplamSoru += iCozulen
-                                        toplamSure += iCalisma
-                                        val currentClass = com.karaketir.akademi.models.Class(
-                                            i,
-                                            studentID,
-                                            baslangicTarihi,
-                                            bitisTarihi,
-                                            secilenZamanAraligi,
-                                            iCozulen,
-                                            iCalisma
-                                        )
-                                        val toplamSureSaat = toplamSure.toFloat() / 60
-                                        toplamSureText.text = toplamSure.toString() + "dk " + "(${
-                                            toplamSureSaat.format(2)
-                                        } Saat)"
-                                        toplamSoruText.text = "$toplamSoru Soru"
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(studentID).collection("Studies").whereEqualTo("dersAdi", i)
+                            .whereGreaterThan("timestamp", baslangicTarihi)
+                            .whereLessThan("timestamp", bitisTarihi)
+                            .addSnapshotListener { value2, error ->
+                                if (error != null) {
+                                    println(error.localizedMessage)
+                                }
 
-                                        studyList.add(currentClass)
-
-                                        recyclerViewStudiesAdapter.notifyDataSetChanged()
-
+                                if (value2 != null) {
+                                    for (study in value2) {
+                                        iCalisma += study.get("toplamCalisma").toString().toInt()
+                                        iCozulen += study.get("çözülenSoru").toString().toInt()
                                     }
+                                }
+                                toplamSoru += iCozulen
+                                toplamSure += iCalisma
+                                val currentClass = com.karaketir.akademi.models.Class(
+                                    i,
+                                    studentID,
+                                    baslangicTarihi,
+                                    bitisTarihi,
+                                    secilenZamanAraligi,
+                                    iCozulen,
+                                    iCalisma
+                                )
+                                val toplamSureSaat = toplamSure.toFloat() / 60
+                                toplamSureText.text = toplamSure.toString() + "dk " + "(${
+                                    toplamSureSaat.format(2)
+                                } Saat)"
+                                toplamSoruText.text = "$toplamSoru Soru"
+
+                                studyList.add(currentClass)
+
+                                recyclerViewStudiesAdapter.notifyDataSetChanged()
 
                             }
+
+
                     }
 
 

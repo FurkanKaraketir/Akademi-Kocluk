@@ -416,12 +416,14 @@ class StatsActivity : AppCompatActivity() {
                                 cal.add(Calendar.DAY_OF_YEAR, 1)
                                 bitisTarihi = cal.time
                             }
+
                             1 -> {
                                 bitisTarihi = cal.time
 
                                 cal.add(Calendar.DAY_OF_YEAR, -1)
                                 baslangicTarihi = cal.time
                             }
+
                             2 -> {
                                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                                 baslangicTarihi = cal.time
@@ -431,6 +433,7 @@ class StatsActivity : AppCompatActivity() {
                                 bitisTarihi = cal.time
 
                             }
+
                             3 -> {
                                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                                 bitisTarihi = cal.time
@@ -441,6 +444,7 @@ class StatsActivity : AppCompatActivity() {
 
 
                             }
+
                             4 -> {
 
                                 cal = Calendar.getInstance()
@@ -460,6 +464,7 @@ class StatsActivity : AppCompatActivity() {
 
 
                             }
+
                             5 -> {
                                 cal = Calendar.getInstance()
                                 cal[Calendar.HOUR_OF_DAY] =
@@ -490,244 +495,231 @@ class StatsActivity : AppCompatActivity() {
                         }
 
 
-                        var kurumKodu: Int
+                        val kurumKodu = 763455
                         val dersListesi = kotlin.collections.ArrayList<String>()
 
-                        db.collection("User").document(auth.uid.toString()).get()
-                            .addOnSuccessListener {
-                                kurumKodu = it.get("kurumKodu").toString().toInt()
 
-                                db.collection("Lessons")
-                                    .orderBy("dersAdi", Query.Direction.ASCENDING)
-                                    .addSnapshotListener { dersler, _ ->
-                                        if (dersler != null) {
-                                            for (i in dersler) {
-                                                dersListesi.add(i.id)
-                                            }
-                                        }
-                                        for (dersIndex in dersListesi) {
-
-                                            if (secilenGrade == "Bütün Sınıflar") {
-                                                db.collection("School")
-                                                    .document(kurumKodu.toString())
-                                                    .collection("Student")
-                                                    .whereEqualTo("teacher", auth.uid.toString())
-                                                    .addSnapshotListener { ogrencliler, _ ->
-                                                        statsList.clear()
-
-                                                        if (ogrencliler != null) {
-                                                            ogrenciSayisi = ogrencliler.size()
-
-                                                            for (ogrenci in ogrencliler) {
-                                                                var toplamCalisma = 0
-                                                                var cozulenSoru = 0
-                                                                db.collection("School")
-                                                                    .document(kurumKodu.toString())
-                                                                    .collection("Student")
-                                                                    .document(ogrenci.id)
-                                                                    .collection("Studies")
-                                                                    .whereEqualTo(
-                                                                        "dersAdi", dersIndex
-                                                                    ).whereGreaterThan(
-                                                                        "timestamp", baslangicTarihi
-                                                                    ).whereLessThan(
-                                                                        "timestamp", bitisTarihi
-                                                                    )
-                                                                    .addSnapshotListener { studies, _ ->
-
-
-                                                                        if (studies != null && ogrencliler.size() != 0) {
-
-                                                                            for (study in studies) {
-                                                                                toplamCalisma += study.get(
-                                                                                    "toplamCalisma"
-                                                                                ).toString().toInt()
-                                                                                cozulenSoru += study.get(
-                                                                                    "çözülenSoru"
-                                                                                ).toString().toInt()
-
-
-                                                                            }
-                                                                            if (dersIndex in dersSoruHash.keys) {
-
-                                                                                val currentValue =
-                                                                                    dersSoruHash[dersIndex]
-
-                                                                                if (currentValue != null) {
-                                                                                    dersSoruHash[dersIndex] =
-                                                                                        currentValue + cozulenSoru
-                                                                                }
-
-
-                                                                            } else {
-                                                                                dersSoruHash[dersIndex] =
-                                                                                    cozulenSoru.toFloat()
-                                                                            }
-
-                                                                            if (dersIndex in dersSureHash.keys) {
-
-                                                                                val currentValue =
-                                                                                    dersSureHash[dersIndex]
-
-                                                                                if (currentValue != null) {
-                                                                                    dersSureHash[dersIndex] =
-                                                                                        currentValue + toplamCalisma
-                                                                                }
-
-
-                                                                            } else {
-                                                                                dersSureHash[dersIndex] =
-                                                                                    toplamCalisma.toFloat()
-                                                                            }
-
-
-
-
-                                                                            statsList.clear()
-                                                                            for (i in dersSureHash.keys) {
-                                                                                val currentStatistic =
-                                                                                    Statistic(
-                                                                                        i,
-                                                                                        (dersSureHash[i]?.div(
-                                                                                            ogrenciSayisi
-                                                                                        )).toString(),
-                                                                                        (dersSoruHash[i]?.div(
-                                                                                            ogrenciSayisi
-                                                                                        )).toString()
-                                                                                    )
-
-                                                                                statsList.add(
-                                                                                    currentStatistic
-                                                                                )
-                                                                                recyclerViewStatsAdapter.notifyDataSetChanged()
-                                                                            }
-                                                                        }
-
-
-                                                                    }
-
-
-                                                            }
-
-                                                        }
-
-
-                                                    }
-                                            } else {
-                                                db.collection("School")
-                                                    .document(kurumKodu.toString())
-                                                    .collection("Student")
-                                                    .whereEqualTo("teacher", auth.uid.toString())
-                                                    .whereEqualTo("grade", secilenGrade.toInt())
-                                                    .addSnapshotListener { ogrencliler, error ->
-                                                        statsList.clear()
-                                                        if (error != null) {
-                                                            println(error.localizedMessage)
-                                                        }
-
-                                                        if (ogrencliler != null) {
-                                                            ogrenciSayisi = ogrencliler.size()
-
-                                                            for (ogrenci in ogrencliler) {
-                                                                var toplamCalisma = 0
-                                                                var cozulenSoru = 0
-                                                                db.collection("School")
-                                                                    .document(kurumKodu.toString())
-                                                                    .collection("Student")
-                                                                    .document(ogrenci.id)
-                                                                    .collection("Studies")
-                                                                    .whereEqualTo(
-                                                                        "dersAdi", dersIndex
-                                                                    ).whereGreaterThan(
-                                                                        "timestamp", baslangicTarihi
-                                                                    ).whereLessThan(
-                                                                        "timestamp", bitisTarihi
-                                                                    )
-                                                                    .addSnapshotListener { studies, _ ->
-
-
-                                                                        if (studies != null && ogrencliler.size() != 0) {
-
-                                                                            for (study in studies) {
-                                                                                toplamCalisma += study.get(
-                                                                                    "toplamCalisma"
-                                                                                ).toString().toInt()
-                                                                                cozulenSoru += study.get(
-                                                                                    "çözülenSoru"
-                                                                                ).toString().toInt()
-
-
-                                                                            }
-                                                                            if (dersIndex in dersSoruHash.keys) {
-
-                                                                                val currentValue =
-                                                                                    dersSoruHash[dersIndex]
-
-                                                                                if (currentValue != null) {
-                                                                                    dersSoruHash[dersIndex] =
-                                                                                        currentValue + cozulenSoru
-                                                                                }
-
-
-                                                                            } else {
-                                                                                dersSoruHash[dersIndex] =
-                                                                                    cozulenSoru.toFloat()
-                                                                            }
-
-                                                                            if (dersIndex in dersSureHash.keys) {
-
-                                                                                val currentValue =
-                                                                                    dersSureHash[dersIndex]
-
-                                                                                if (currentValue != null) {
-                                                                                    dersSureHash[dersIndex] =
-                                                                                        currentValue + toplamCalisma
-                                                                                }
-
-
-                                                                            } else {
-                                                                                dersSureHash[dersIndex] =
-                                                                                    toplamCalisma.toFloat()
-                                                                            }
-
-
-
-                                                                            statsList.clear()
-                                                                            for (i in dersSureHash.keys) {
-                                                                                val currentStatistic =
-                                                                                    Statistic(
-                                                                                        i,
-                                                                                        (dersSureHash[i]?.div(
-                                                                                            ogrenciSayisi
-                                                                                        )).toString(),
-                                                                                        (dersSoruHash[i]?.div(
-                                                                                            ogrenciSayisi
-                                                                                        )).toString()
-                                                                                    )
-                                                                                statsList.add(
-                                                                                    currentStatistic
-                                                                                )
-                                                                                recyclerViewStatsAdapter.notifyDataSetChanged()
-                                                                            }
-
-
-                                                                        }
-
-
-                                                                    }
-
-
-                                                            }
-
-                                                        }
-
-
-                                                    }
-                                            }
-                                        }
-
+                        db.collection("Lessons").orderBy("dersAdi", Query.Direction.ASCENDING)
+                            .addSnapshotListener { dersler, _ ->
+                                if (dersler != null) {
+                                    for (i in dersler) {
+                                        dersListesi.add(i.id)
                                     }
+                                }
+                                for (dersIndex in dersListesi) {
 
+                                    if (secilenGrade == "Bütün Sınıflar") {
+                                        db.collection("School").document(kurumKodu.toString())
+                                            .collection("Student")
+                                            .whereEqualTo("teacher", auth.uid.toString())
+                                            .addSnapshotListener { ogrencliler, _ ->
+                                                statsList.clear()
+
+                                                if (ogrencliler != null) {
+                                                    ogrenciSayisi = ogrencliler.size()
+
+                                                    for (ogrenci in ogrencliler) {
+                                                        var toplamCalisma = 0
+                                                        var cozulenSoru = 0
+                                                        db.collection("School")
+                                                            .document(kurumKodu.toString())
+                                                            .collection("Student")
+                                                            .document(ogrenci.id)
+                                                            .collection("Studies").whereEqualTo(
+                                                                "dersAdi", dersIndex
+                                                            ).whereGreaterThan(
+                                                                "timestamp", baslangicTarihi
+                                                            ).whereLessThan(
+                                                                "timestamp", bitisTarihi
+                                                            ).addSnapshotListener { studies, _ ->
+
+
+                                                                if (studies != null && ogrencliler.size() != 0) {
+
+                                                                    for (study in studies) {
+                                                                        toplamCalisma += study.get(
+                                                                            "toplamCalisma"
+                                                                        ).toString().toInt()
+                                                                        cozulenSoru += study.get(
+                                                                            "çözülenSoru"
+                                                                        ).toString().toInt()
+
+
+                                                                    }
+                                                                    if (dersIndex in dersSoruHash.keys) {
+
+                                                                        val currentValue =
+                                                                            dersSoruHash[dersIndex]
+
+                                                                        if (currentValue != null) {
+                                                                            dersSoruHash[dersIndex] =
+                                                                                currentValue + cozulenSoru
+                                                                        }
+
+
+                                                                    } else {
+                                                                        dersSoruHash[dersIndex] =
+                                                                            cozulenSoru.toFloat()
+                                                                    }
+
+                                                                    if (dersIndex in dersSureHash.keys) {
+
+                                                                        val currentValue =
+                                                                            dersSureHash[dersIndex]
+
+                                                                        if (currentValue != null) {
+                                                                            dersSureHash[dersIndex] =
+                                                                                currentValue + toplamCalisma
+                                                                        }
+
+
+                                                                    } else {
+                                                                        dersSureHash[dersIndex] =
+                                                                            toplamCalisma.toFloat()
+                                                                    }
+
+
+
+
+                                                                    statsList.clear()
+                                                                    for (i in dersSureHash.keys) {
+                                                                        val currentStatistic =
+                                                                            Statistic(
+                                                                                i,
+                                                                                (dersSureHash[i]?.div(
+                                                                                    ogrenciSayisi
+                                                                                )).toString(),
+                                                                                (dersSoruHash[i]?.div(
+                                                                                    ogrenciSayisi
+                                                                                )).toString()
+                                                                            )
+
+                                                                        statsList.add(
+                                                                            currentStatistic
+                                                                        )
+                                                                        recyclerViewStatsAdapter.notifyDataSetChanged()
+                                                                    }
+                                                                }
+
+
+                                                            }
+
+
+                                                    }
+
+                                                }
+
+
+                                            }
+                                    } else {
+                                        db.collection("School").document(kurumKodu.toString())
+                                            .collection("Student")
+                                            .whereEqualTo("teacher", auth.uid.toString())
+                                            .whereEqualTo("grade", secilenGrade.toInt())
+                                            .addSnapshotListener { ogrencliler, error ->
+                                                statsList.clear()
+                                                if (error != null) {
+                                                    println(error.localizedMessage)
+                                                }
+
+                                                if (ogrencliler != null) {
+                                                    ogrenciSayisi = ogrencliler.size()
+
+                                                    for (ogrenci in ogrencliler) {
+                                                        var toplamCalisma = 0
+                                                        var cozulenSoru = 0
+                                                        db.collection("School")
+                                                            .document(kurumKodu.toString())
+                                                            .collection("Student")
+                                                            .document(ogrenci.id)
+                                                            .collection("Studies").whereEqualTo(
+                                                                "dersAdi", dersIndex
+                                                            ).whereGreaterThan(
+                                                                "timestamp", baslangicTarihi
+                                                            ).whereLessThan(
+                                                                "timestamp", bitisTarihi
+                                                            ).addSnapshotListener { studies, _ ->
+
+
+                                                                if (studies != null && ogrencliler.size() != 0) {
+
+                                                                    for (study in studies) {
+                                                                        toplamCalisma += study.get(
+                                                                            "toplamCalisma"
+                                                                        ).toString().toInt()
+                                                                        cozulenSoru += study.get(
+                                                                            "çözülenSoru"
+                                                                        ).toString().toInt()
+
+
+                                                                    }
+                                                                    if (dersIndex in dersSoruHash.keys) {
+
+                                                                        val currentValue =
+                                                                            dersSoruHash[dersIndex]
+
+                                                                        if (currentValue != null) {
+                                                                            dersSoruHash[dersIndex] =
+                                                                                currentValue + cozulenSoru
+                                                                        }
+
+
+                                                                    } else {
+                                                                        dersSoruHash[dersIndex] =
+                                                                            cozulenSoru.toFloat()
+                                                                    }
+
+                                                                    if (dersIndex in dersSureHash.keys) {
+
+                                                                        val currentValue =
+                                                                            dersSureHash[dersIndex]
+
+                                                                        if (currentValue != null) {
+                                                                            dersSureHash[dersIndex] =
+                                                                                currentValue + toplamCalisma
+                                                                        }
+
+
+                                                                    } else {
+                                                                        dersSureHash[dersIndex] =
+                                                                            toplamCalisma.toFloat()
+                                                                    }
+
+
+
+                                                                    statsList.clear()
+                                                                    for (i in dersSureHash.keys) {
+                                                                        val currentStatistic =
+                                                                            Statistic(
+                                                                                i,
+                                                                                (dersSureHash[i]?.div(
+                                                                                    ogrenciSayisi
+                                                                                )).toString(),
+                                                                                (dersSoruHash[i]?.div(
+                                                                                    ogrenciSayisi
+                                                                                )).toString()
+                                                                            )
+                                                                        statsList.add(
+                                                                            currentStatistic
+                                                                        )
+                                                                        recyclerViewStatsAdapter.notifyDataSetChanged()
+                                                                    }
+
+
+                                                                }
+
+
+                                                            }
+
+
+                                                    }
+
+                                                }
+
+
+                                            }
+                                    }
+                                }
 
                             }
 

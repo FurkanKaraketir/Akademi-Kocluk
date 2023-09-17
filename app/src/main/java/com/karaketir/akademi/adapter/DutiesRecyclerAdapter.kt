@@ -23,6 +23,7 @@ open class DutiesRecyclerAdapter(private val dutyList: List<Duty>) :
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private val kurumKodu = 763455
 
 
     class DutyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -49,9 +50,7 @@ open class DutiesRecyclerAdapter(private val dutyList: List<Duty>) :
 
                 auth = Firebase.auth
                 db = Firebase.firestore
-                var kurumKodu: Int
                 db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    kurumKodu = it.get("kurumKodu").toString().toInt()
                     binding.dutyKonuAdiTextView.text = myItem.konuAdi
                     binding.dutyTurText.text = myItem.tur
                     binding.dutyDersText.text = myItem.dersAdi

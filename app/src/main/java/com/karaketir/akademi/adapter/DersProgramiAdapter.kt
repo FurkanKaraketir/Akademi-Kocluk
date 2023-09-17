@@ -17,6 +17,7 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private val kurumKodu = 763455
 
     class DersHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ProgramRowBinding.bind(itemView)
@@ -44,12 +45,14 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
             val dersTuruText = binding.dersTuruProgram
             val dersSureText = binding.derSureProgram
             val dersNumaraText = binding.dersNumaraProgram
+            val dersSoruText = binding.derSoruProgram
 
             val dersNumber = (myItem.dersNumara.toInt() + 1).toString()
 
             dersAdiText.text = myItem.dersAdi
             dersTuruText.text = myItem.dersTuru
             dersSureText.text = myItem.dersSure.toString() + "dk"
+            dersSoruText.text = myItem.dersSoru.toString() + " Soru"
             dersNumaraText.text = "$dersNumber. Ders"
 
 
@@ -132,9 +135,7 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
 
             var toplamCalisma = 0
 
-            db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                val kurumKodu = it.get("kurumKodu").toString().toInt()
-
+            if (myItem.dersTuru != "TYT ve AYT") {
                 db.collection("School").document(kurumKodu.toString()).collection("Student")
                     .document(myItem.studentOwnerID).collection("Studies")
                     .whereEqualTo("dersAdi", myItem.dersAdi).whereEqualTo("tür", myItem.dersTuru)
@@ -155,6 +156,82 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
                             binding.haftaSureImage.setImageResource(R.drawable.ic_baseline_error_outline_24)
                         } else {
                             binding.haftaSureImage.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+                        }
+
+                    }
+
+                var toplamSoru = 0
+
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(myItem.studentOwnerID).collection("Studies")
+                    .whereEqualTo("dersAdi", myItem.dersAdi).whereEqualTo("tür", myItem.dersTuru)
+                    .whereGreaterThan("timestamp", baslangicTarihi)
+                    .whereLessThan("timestamp", bitisTarihi).addSnapshotListener { value, _ ->
+
+                        if (value != null) {
+
+                            for (document in value) {
+
+                                toplamSoru += document.get("çözülenSoru").toString().toInt()
+
+                            }
+
+                        }
+
+                        if (toplamSoru < myItem.dersSoru) {
+                            binding.haftaSoruImage.setImageResource(R.drawable.ic_baseline_error_outline_24)
+                        } else {
+                            binding.haftaSoruImage.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+                        }
+
+                    }
+            } else {
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(myItem.studentOwnerID).collection("Studies")
+                    .whereEqualTo("dersAdi", myItem.dersAdi)
+                    .whereGreaterThan("timestamp", baslangicTarihi)
+                    .whereLessThan("timestamp", bitisTarihi).addSnapshotListener { value, _ ->
+
+                        if (value != null) {
+
+                            for (document in value) {
+
+                                toplamCalisma += document.get("toplamCalisma").toString().toInt()
+
+                            }
+
+                        }
+
+                        if (toplamCalisma < myItem.dersSure) {
+                            binding.haftaSureImage.setImageResource(R.drawable.ic_baseline_error_outline_24)
+                        } else {
+                            binding.haftaSureImage.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+                        }
+
+                    }
+
+                var toplamSoru = 0
+
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(myItem.studentOwnerID).collection("Studies")
+                    .whereEqualTo("dersAdi", myItem.dersAdi)
+                    .whereGreaterThan("timestamp", baslangicTarihi)
+                    .whereLessThan("timestamp", bitisTarihi).addSnapshotListener { value, _ ->
+
+                        if (value != null) {
+
+                            for (document in value) {
+
+                                toplamSoru += document.get("çözülenSoru").toString().toInt()
+
+                            }
+
+                        }
+
+                        if (toplamSoru < myItem.dersSoru) {
+                            binding.haftaSoruImage.setImageResource(R.drawable.ic_baseline_error_outline_24)
+                        } else {
+                            binding.haftaSoruImage.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
                         }
 
                     }

@@ -75,6 +75,8 @@ class PaywallAdapter(
 
                         binding.paywallItemPrice.text = price
                     }
+
+                    else -> {}
                 }
             }
         }

@@ -60,6 +60,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private var biyolojiYanlisDegeri = 0
     private var denemeAdi = ""
     private var denemeList = ArrayList<String>()
+    private val kurumKodu = 763455
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,7 +87,6 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         val studyType = intent.getStringExtra("studyType")
 
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            val kurumKodu = it.get("kurumKodu").toString().toInt()
             val grade = it.get("grade").toString().toInt()
 
             db.collection("School").document(kurumKodu.toString()).collection("Student")
@@ -233,79 +233,28 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         }
 
         button.setOnClickListener {
-            db.collection(
-                "User"
-            ).document(
-                auth.uid.toString()
-            ).get().addOnSuccessListener {
-                val kurumKodu = it.get("kurumKodu").toString().toInt()
 
-                button.isClickable = false
-                val turkceNet = turkceDogruDegeri - (turkceYanlisDegeri * 0.25f)
-                val tarihNet = tarihDogruDegeri - (tarihYanlisDegeri * 0.25f)
-                val cogNet = cogDogruDegeri - (cogYanlisDegeri * 0.25f)
-                val felNet = felsefeDogruDegeri - (felsefeYanlisDegeri * 0.25f)
-                val dinNet = dinDogruDegeri - (dinYanlisDegeri * 0.25f)
-                val matNet = matDogruDegeri - (matYanlisDegeri * 0.25f)
-                val fizNet = fizikDogruDegeri - (fizikYanlisDegeri * 0.25f)
-                val kimyaNet = kimyaDogruDegeri - (kimyaYanlisDegeri * 0.25f)
-                val biyoNet = biyolojiDogruDegeri - (biyolojiYanlisDegeri * 0.25f)
-                val geoNet = geoDogruDegeri - (geoYanlisDegeri * 0.25f)
+            button.isClickable = false
+            val turkceNet = turkceDogruDegeri - (turkceYanlisDegeri * 0.25f)
+            val tarihNet = tarihDogruDegeri - (tarihYanlisDegeri * 0.25f)
+            val cogNet = cogDogruDegeri - (cogYanlisDegeri * 0.25f)
+            val felNet = felsefeDogruDegeri - (felsefeYanlisDegeri * 0.25f)
+            val dinNet = dinDogruDegeri - (dinYanlisDegeri * 0.25f)
+            val matNet = matDogruDegeri - (matYanlisDegeri * 0.25f)
+            val fizNet = fizikDogruDegeri - (fizikYanlisDegeri * 0.25f)
+            val kimyaNet = kimyaDogruDegeri - (kimyaYanlisDegeri * 0.25f)
+            val biyoNet = biyolojiDogruDegeri - (biyolojiYanlisDegeri * 0.25f)
+            val geoNet = geoDogruDegeri - (geoYanlisDegeri * 0.25f)
 
 
-                val toplamNet =
-                    turkceNet + tarihNet + cogNet + felNet + dinNet + matNet + fizNet + kimyaNet + biyoNet + geoNet
+            val toplamNet =
+                turkceNet + tarihNet + cogNet + felNet + dinNet + matNet + fizNet + kimyaNet + biyoNet + geoNet
 
-                if (denemeAdi == "") {
-                    if (binding.denemeNameEditText.text.isNotEmpty()) {
-                        binding.denemeNameEditText.error = null
-                        denemeAdi = binding.denemeNameEditText.text.toString()
+            if (denemeAdi == "") {
+                if (binding.denemeNameEditText.text.isNotEmpty()) {
+                    binding.denemeNameEditText.error = null
+                    denemeAdi = binding.denemeNameEditText.text.toString()
 
-
-                        val deneme = hashMapOf(
-                            "id" to documentID,
-                            "denemeTür" to studyType,
-                            "denemeAdi" to denemeAdi,
-                            "turkceNet" to turkceNet,
-                            "tarihNet" to tarihNet,
-                            "cogNet" to cogNet,
-                            "felNet" to felNet,
-                            "dinNet" to dinNet,
-                            "matNet" to matNet,
-                            "fizNet" to fizNet,
-                            "kimyaNet" to kimyaNet,
-                            "biyoNet" to biyoNet,
-                            "geoNet" to geoNet,
-                            "denemeTarihi" to Timestamp.now(),
-                            "toplamNet" to toplamNet
-                        )
-
-                        db.collection(
-                            "School"
-                        ).document(
-                            kurumKodu.toString()
-                        ).collection(
-                            "Student"
-                        ).document(
-                            auth.uid.toString()
-                        ).collection(
-                            "Denemeler"
-                        ).document(
-                            documentID
-                        ).set(
-                            deneme
-                        ).addOnSuccessListener {
-                            Toast.makeText(
-                                this, "İşlem Başarılı", Toast.LENGTH_SHORT
-                            ).show()
-                            finish()
-                        }
-
-                    } else {
-                        binding.denemeNameEditText.error = "Bu Alan Boş Bırakılamaz"
-                        button.isClickable = true
-                    }
-                } else {
 
                     val deneme = hashMapOf(
                         "id" to documentID,
@@ -345,10 +294,54 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                         ).show()
                         finish()
                     }
+
+                } else {
+                    binding.denemeNameEditText.error = "Bu Alan Boş Bırakılamaz"
+                    button.isClickable = true
                 }
+            } else {
 
+                val deneme = hashMapOf(
+                    "id" to documentID,
+                    "denemeTür" to studyType,
+                    "denemeAdi" to denemeAdi,
+                    "turkceNet" to turkceNet,
+                    "tarihNet" to tarihNet,
+                    "cogNet" to cogNet,
+                    "felNet" to felNet,
+                    "dinNet" to dinNet,
+                    "matNet" to matNet,
+                    "fizNet" to fizNet,
+                    "kimyaNet" to kimyaNet,
+                    "biyoNet" to biyoNet,
+                    "geoNet" to geoNet,
+                    "denemeTarihi" to Timestamp.now(),
+                    "toplamNet" to toplamNet
+                )
 
+                db.collection(
+                    "School"
+                ).document(
+                    kurumKodu.toString()
+                ).collection(
+                    "Student"
+                ).document(
+                    auth.uid.toString()
+                ).collection(
+                    "Denemeler"
+                ).document(
+                    documentID
+                ).set(
+                    deneme
+                ).addOnSuccessListener {
+                    Toast.makeText(
+                        this, "İşlem Başarılı", Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
             }
+
+
         }
     }
 

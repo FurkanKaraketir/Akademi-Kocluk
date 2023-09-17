@@ -24,6 +24,7 @@ open class StudiesRecyclerAdapter(
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
 
+    private val kurumKodu = 763455
 
     class StudyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = StudyGridRowBinding.bind(itemView)
@@ -133,22 +134,17 @@ open class StudiesRecyclerAdapter(
                     deleteStudyDialog.setMessage("Bu Çalışmayı Silmek İstediğinizden Emin misiniz?")
 
                     deleteStudyDialog.setPositiveButton("Sil") { _, _ ->
-                        db.collection("User").document(auth.uid.toString()).get()
-                            .addOnSuccessListener {
 
-                                val kurumKodu = it.get("kurumKodu").toString()
-                                db.collection("School").document(kurumKodu).collection("Student")
-                                    .document(myItem.studyOwnerID).collection("Studies")
-                                    .document(myItem.studyID).delete().addOnSuccessListener {
-                                        Toast.makeText(
-                                            holder.itemView.context,
-                                            "İşlem Başarılı!",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(myItem.studyOwnerID).collection("Studies")
+                            .document(myItem.studyID).delete().addOnSuccessListener {
+                                Toast.makeText(
+                                    holder.itemView.context, "İşlem Başarılı!", Toast.LENGTH_SHORT
+                                ).show()
                             }
+
                     }
+
                     deleteStudyDialog.setNegativeButton("İptal") { _, _ ->
 
                     }

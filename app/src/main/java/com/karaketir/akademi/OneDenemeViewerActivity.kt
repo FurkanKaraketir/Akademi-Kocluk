@@ -64,31 +64,30 @@ class OneDenemeViewerActivity : AppCompatActivity() {
         val toplamNetTextView = binding.toplamNetTextView
 
 
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            val kurumKodu = it.get("kurumKodu").toString().toInt()
+        val kurumKodu = 763455
 
-            db.collection("School").document(kurumKodu.toString()).collection("Student")
-                .document(denemeStudentID).collection("Denemeler").document(denemeID!!).get()
-                .addOnSuccessListener { deneme ->
-
-
-                    denemeTitle.text = "Deneme Adı: " + deneme.get("denemeAdi").toString()
-                    turkNetTextView.text = "Türkçe Net: " + deneme.get("turkceNet").toString()
-                    tarihNetTextView.text = "Tarih Net: " + deneme.get("tarihNet").toString()
-                    cografyaNetTextView.text = "Coğrafya Net: " + deneme.get("cogNet").toString()
-                    felsefeNetTextView.text = "Felsefe Net: " + deneme.get("felNet").toString()
-                    dinNetTextView.text = "Din Net: " + deneme.get("dinNet").toString()
-                    matematikNetTextView.text = "Matematik Net: " + deneme.get("matNet").toString()
-                    geometriNetTextView.text = "Geometri Net: " + deneme.get("geoNet").toString()
-                    fizikNetTextView.text = "Fizik Net: " + deneme.get("fizNet").toString()
-                    kimyaNetTextView.text = "Kimya Net: " + deneme.get("kimyaNet").toString()
-                    biyolojiNetTextView.text = "Biyoloji Net: " + deneme.get("biyoNet").toString()
-                    toplamNetTextView.text = "Toplam Net: " + deneme.get("toplamNet").toString()
-
-                }
+        db.collection("School").document(kurumKodu.toString()).collection("Student")
+            .document(denemeStudentID).collection("Denemeler").document(denemeID!!).get()
+            .addOnSuccessListener { deneme ->
 
 
-        }
+                denemeTitle.text = "Deneme Adı: " + deneme.get("denemeAdi").toString()
+                turkNetTextView.text = "Türkçe Net: " + deneme.get("turkceNet").toString()
+                tarihNetTextView.text = "Tarih Net: " + deneme.get("tarihNet").toString()
+                cografyaNetTextView.text = "Coğrafya Net: " + deneme.get("cogNet").toString()
+                felsefeNetTextView.text = "Felsefe Net: " + deneme.get("felNet").toString()
+                dinNetTextView.text = "Din Net: " + deneme.get("dinNet").toString()
+                matematikNetTextView.text = "Matematik Net: " + deneme.get("matNet").toString()
+                geometriNetTextView.text = "Geometri Net: " + deneme.get("geoNet").toString()
+                fizikNetTextView.text = "Fizik Net: " + deneme.get("fizNet").toString()
+                kimyaNetTextView.text = "Kimya Net: " + deneme.get("kimyaNet").toString()
+                biyolojiNetTextView.text = "Biyoloji Net: " + deneme.get("biyoNet").toString()
+                toplamNetTextView.text = "Toplam Net: " + deneme.get("toplamNet").toString()
+
+            }
+
+
+
 
 
         cografyaNetTextView.setOnClickListener {

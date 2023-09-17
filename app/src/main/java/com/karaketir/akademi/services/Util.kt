@@ -11,16 +11,16 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.karaketir.akademi.R
-import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.FillPatternType
+import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.util.CellUtil
 import org.apache.poi.xssf.usermodel.IndexedColorMap
 import org.apache.poi.xssf.usermodel.XSSFColor
@@ -30,13 +30,9 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
-fun ImageView.glide(url: String?, placeholder: CircularProgressDrawable) {
-    val options = RequestOptions().placeholder(placeholder).error(R.drawable.blank)
-
-    Glide.with(context.applicationContext).setDefaultRequestOptions(options).load(url).into(this)
-}
+private const val CODE = 763455
 
 fun TextView.setTextAnimation(
     text: String, duration: Long = 300, completion: (() -> Unit)? = null
@@ -330,7 +326,6 @@ fun addData(
     sheet: Sheet,
     secilenZaman: String,
     secilenGrade: String,
-    currentKurumKodu: String,
     auth: FirebaseAuth,
     db: FirebaseFirestore,
     context: Context,
@@ -474,7 +469,7 @@ fun addData(
     CellUtil.createCell(rowFake, 28, "Diğer Soru")
 
     if (secilenGrade != "Bütün Sınıflar") {
-        db.collection("School").document(currentKurumKodu).collection("Student")
+        db.collection("School").document(CODE.toString()).collection("Student")
             .whereEqualTo("teacher", auth.uid.toString())
             .whereEqualTo("grade", secilenGrade.toInt()).orderBy("nameAndSurname")
             .addSnapshotListener { students, _ ->
@@ -528,7 +523,7 @@ fun addData(
                         val row = sheet.createRow(index)
                         CellUtil.createCell(row, 0, i.get("nameAndSurname").toString())
 
-                        db.collection("School").document(currentKurumKodu).collection("Student")
+                        db.collection("School").document(CODE.toString()).collection("Student")
                             .document(i.id).collection("Studies")
                             .whereGreaterThan("timestamp", baslangicTarihi)
                             .whereLessThan("timestamp", bitisTarihi)
@@ -745,7 +740,7 @@ fun addData(
 
 
     } else {
-        db.collection("School").document(currentKurumKodu).collection("Student")
+        db.collection("School").document(CODE.toString()).collection("Student")
             .whereEqualTo("teacher", auth.uid.toString()).orderBy("nameAndSurname")
             .addSnapshotListener { students, _ ->
                 if (students != null) {
@@ -798,7 +793,7 @@ fun addData(
                         val row = sheet.createRow(index)
                         CellUtil.createCell(row, 0, i.get("nameAndSurname").toString())
 
-                        db.collection("School").document(currentKurumKodu).collection("Student")
+                        db.collection("School").document(CODE.toString()).collection("Student")
                             .document(i.id).collection("Studies")
                             .whereGreaterThan("timestamp", baslangicTarihi)
                             .whereLessThan("timestamp", bitisTarihi)

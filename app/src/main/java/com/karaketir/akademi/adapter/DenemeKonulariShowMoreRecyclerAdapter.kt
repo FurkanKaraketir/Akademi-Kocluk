@@ -24,6 +24,7 @@ class DenemeKonulariShowMoreRecyclerAdapter(
     private val itemList = konuListesi
     private lateinit var db: FirebaseFirestore
     lateinit var auth: FirebaseAuth
+    val kurumKodu = 763455
 
     class KonuHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -76,54 +77,48 @@ class DenemeKonulariShowMoreRecyclerAdapter(
 
                 binding.saveSubjectButton.setOnClickListener {
                     val konuHash = subItemAdapter.konuHash
-                    var kurumKodu: Int
-
-                    db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                        kurumKodu = it.get("kurumKodu").toString().toInt()
-
-                        if (konuHash.isEmpty()) {
-                            println("Error Here")
-                        }
-
-                        var konuToplamYanlis = 0
-                        for (j in konuHash.keys) {
-                            val konuHashMap = hashMapOf(
-                                "konuAdi" to j, "yanlisSayisi" to konuHash[j]
-                            )
 
 
-                            db.collection("School").document(kurumKodu.toString())
-                                .collection("Student").document(auth.uid.toString())
-                                .collection("Denemeler").document(denemeID).collection(dersAdi)
-                                .document(binding.denemeKonuAdi.text.toString())
-                                .collection("AltKonu").document(j).set(
-                                    konuHashMap
-                                ).addOnSuccessListener {
 
-                                    konuToplamYanlis += konuHash[j]!!
+                    if (konuHash.isEmpty()) {
+                        println("Error Here")
+                    }
 
-
-                                    val ustKonuHashMap = hashMapOf(
-                                        "konuAdi" to binding.denemeKonuAdi.text.toString(),
-                                        "yanlisSayisi" to konuToplamYanlis
-                                    )
-                                    db.collection("School").document(kurumKodu.toString())
-                                        .collection("Student").document(auth.uid.toString())
-                                        .collection("Denemeler").document(denemeID)
-                                        .collection(dersAdi)
-                                        .document(binding.denemeKonuAdi.text.toString())
-                                        .set(ustKonuHashMap).addOnSuccessListener {
-                                            Toast.makeText(
-                                                holder.itemView.context,
-                                                "İşlem Başarılı",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-
-                                }
+                    var konuToplamYanlis = 0
+                    for (j in konuHash.keys) {
+                        val konuHashMap = hashMapOf(
+                            "konuAdi" to j, "yanlisSayisi" to konuHash[j]
+                        )
 
 
-                        }
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(auth.uid.toString()).collection("Denemeler")
+                            .document(denemeID).collection(dersAdi)
+                            .document(binding.denemeKonuAdi.text.toString()).collection("AltKonu")
+                            .document(j).set(
+                                konuHashMap
+                            ).addOnSuccessListener {
+
+                                konuToplamYanlis += konuHash[j]!!
+
+
+                                val ustKonuHashMap = hashMapOf(
+                                    "konuAdi" to binding.denemeKonuAdi.text.toString(),
+                                    "yanlisSayisi" to konuToplamYanlis
+                                )
+                                db.collection("School").document(kurumKodu.toString())
+                                    .collection("Student").document(auth.uid.toString())
+                                    .collection("Denemeler").document(denemeID).collection(dersAdi)
+                                    .document(binding.denemeKonuAdi.text.toString())
+                                    .set(ustKonuHashMap).addOnSuccessListener {
+                                        Toast.makeText(
+                                            holder.itemView.context,
+                                            "İşlem Başarılı",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                            }
 
 
                     }

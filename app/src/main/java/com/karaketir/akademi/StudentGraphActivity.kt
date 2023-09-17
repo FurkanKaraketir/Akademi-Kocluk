@@ -85,12 +85,14 @@ class StudentGraphActivity : AppCompatActivity() {
                 cal.add(Calendar.DAY_OF_YEAR, 1)
                 bitisTarihi = cal.time
             }
+
             "Dün" -> {
                 bitisTarihi = cal.time
 
                 cal.add(Calendar.DAY_OF_YEAR, -1)
                 baslangicTarihi = cal.time
             }
+
             "Bu Hafta" -> {
                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                 baslangicTarihi = cal.time
@@ -99,6 +101,7 @@ class StudentGraphActivity : AppCompatActivity() {
                 cal.add(Calendar.WEEK_OF_YEAR, 1)
                 bitisTarihi = cal.time
             }
+
             "Geçen Hafta" -> {
                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                 bitisTarihi = cal.time
@@ -106,6 +109,7 @@ class StudentGraphActivity : AppCompatActivity() {
                 cal.add(Calendar.DAY_OF_YEAR, -7)
                 baslangicTarihi = cal.time
             }
+
             "Bu Ay" -> {
                 cal = Calendar.getInstance()
                 cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -121,6 +125,7 @@ class StudentGraphActivity : AppCompatActivity() {
                 cal.add(Calendar.MONTH, 1)
                 bitisTarihi = cal.time
             }
+
             "Geçen Ay" -> {
                 cal = Calendar.getInstance()
                 cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -137,6 +142,7 @@ class StudentGraphActivity : AppCompatActivity() {
                 baslangicTarihi = cal.time
 
             }
+
             "Tüm Zamanlar" -> {
                 cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
                 baslangicTarihi = cal.time
@@ -147,133 +153,127 @@ class StudentGraphActivity : AppCompatActivity() {
             }
         }
 
-        var kurumKodu: Int
-
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            kurumKodu = it.get("kurumKodu").toString().toInt()
-            if (studyOwnerID != null) {
-                db.collection("School").document(kurumKodu.toString()).collection("Student")
-                    .document(studyOwnerID).collection("Studies")
-                    .whereEqualTo("dersAdi", studyDersAdi).whereEqualTo("tür", studyTur)
-                    .whereEqualTo("konuAdi", studyKonuAdi)
-                    .whereGreaterThan("timestamp", baslangicTarihi)
-                    .whereLessThan("timestamp", bitisTarihi)
-                    .orderBy("timestamp", Query.Direction.DESCENDING)
-                    .addSnapshotListener { value, _ ->
-
-                        if (value != null) {
-                            konular.clear()
-                            if (grafikTuru == "Süre") {
-                                for (document in value) {
-                                    val documentKonuAdi = document.get("konuAdi").toString()
-                                    val studyCount = document.get("toplamCalisma").toString()
-                                    val timestamp = document.get("timestamp") as Timestamp
-
-                                    val currentDocument = Study(
-                                        documentKonuAdi,
-                                        studyCount,
-                                        studyOwnerID,
-                                        studyDersAdi!!,
-                                        studyTur!!,
-                                        soruSayisi!!,
-                                        timestamp,
-                                        document.id
-                                    )
+        val kurumKodu = 763455
 
 
-                                    konular.add(currentDocument)
+        if (studyOwnerID != null) {
+            db.collection("School").document(kurumKodu.toString()).collection("Student")
+                .document(studyOwnerID).collection("Studies").whereEqualTo("dersAdi", studyDersAdi)
+                .whereEqualTo("tür", studyTur).whereEqualTo("konuAdi", studyKonuAdi)
+                .whereGreaterThan("timestamp", baslangicTarihi)
+                .whereLessThan("timestamp", bitisTarihi)
+                .orderBy("timestamp", Query.Direction.DESCENDING).addSnapshotListener { value, _ ->
 
-                                }
-                                val data: MutableList<DataEntry> = ArrayList()
+                    if (value != null) {
+                        konular.clear()
+                        if (grafikTuru == "Süre") {
+                            for (document in value) {
+                                val documentKonuAdi = document.get("konuAdi").toString()
+                                val studyCount = document.get("toplamCalisma").toString()
+                                val timestamp = document.get("timestamp") as Timestamp
+
+                                val currentDocument = Study(
+                                    documentKonuAdi,
+                                    studyCount,
+                                    studyOwnerID,
+                                    studyDersAdi!!,
+                                    studyTur!!,
+                                    soruSayisi!!,
+                                    timestamp,
+                                    document.id
+                                )
+
+
+                                konular.add(currentDocument)
+
+                            }
+                            val data: MutableList<DataEntry> = ArrayList()
 
 
 
-                                for (i in konular) {
-                                    val date = i.timestamp.toDate()
-                                    val dateFormated = SimpleDateFormat("dd/MM/yyyy").format(date)
-                                    data.add(ValueDataEntry(dateFormated, i.studyCount.toInt()))
-                                }
-
-                                val column: Column = cartesian.column(data)
-
-                                column.tooltip().titleFormat("{%X}")
-                                    .position(Position.CENTER_BOTTOM).anchor(Anchor.CENTER_BOTTOM)
-                                    .offsetX(0.0).offsetY(5.0)
-                                    .format("{%Value}{groupsSeparator:.}dk")
-
-                                cartesian.animation(true)
-                                val title = "$studyTur $studyDersAdi $studyKonuAdi $zamanAraligi"
-                                cartesian.title(title)
-
-                                cartesian.yScale().minimum(0.0)
-
-                                cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator:.}dk")
-
-                                cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
-                                cartesian.interactivity().hoverMode(HoverMode.BY_X)
-
-                                cartesian.xAxis(0).title("Tarihler")
-                                cartesian.yAxis(0).title("Çalışılan Süre")
-
-                                anyChartView.setChart(cartesian)
-                            } else if (grafikTuru == "Soru") {
-                                for (document in value) {
-                                    val documentKonuAdi = document.get("konuAdi").toString()
-                                    val studyCount = document.get("çözülenSoru").toString()
-                                    val timestamp = document.get("timestamp") as Timestamp
-
-
-                                    val currentDocument = Study(
-                                        documentKonuAdi,
-                                        studyCount,
-                                        studyOwnerID,
-                                        studyDersAdi!!,
-                                        studyTur!!,
-                                        soruSayisi!!,
-                                        timestamp,
-                                        document.id
-                                    )
-
-                                    konular.add(currentDocument)
-                                }
-                                val data: MutableList<DataEntry> = ArrayList()
-
-
-
-                                for (i in konular) {
-                                    val date = i.timestamp.toDate()
-                                    val dateFormated = SimpleDateFormat("dd/MM/yyyy").format(date)
-                                    data.add(ValueDataEntry(dateFormated, i.soruSayisi.toInt()))
-                                }
-
-                                val column: Column = cartesian.column(data)
-
-                                column.tooltip().titleFormat("{%X}")
-                                    .position(Position.CENTER_BOTTOM).anchor(Anchor.CENTER_BOTTOM)
-                                    .offsetX(0.0).offsetY(5.0).format("{%Value}{groupsSeparator:.}")
-
-                                cartesian.animation(true)
-                                val title = "$studyTur $studyDersAdi $studyKonuAdi $zamanAraligi"
-                                cartesian.title(title)
-
-                                cartesian.yScale().minimum(0.0)
-
-                                cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator:.}")
-
-                                cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
-                                cartesian.interactivity().hoverMode(HoverMode.BY_X)
-
-                                cartesian.xAxis(0).title("Tarihler")
-                                cartesian.yAxis(0).title("Çözülen Soru Sayısı")
-
-                                anyChartView.setChart(cartesian)
+                            for (i in konular) {
+                                val date = i.timestamp.toDate()
+                                val dateFormated = SimpleDateFormat("dd/MM/yyyy").format(date)
+                                data.add(ValueDataEntry(dateFormated, i.studyCount.toInt()))
                             }
 
+                            val column: Column = cartesian.column(data)
+
+                            column.tooltip().titleFormat("{%X}").position(Position.CENTER_BOTTOM)
+                                .anchor(Anchor.CENTER_BOTTOM).offsetX(0.0).offsetY(5.0)
+                                .format("{%Value}{groupsSeparator:.}dk")
+
+                            cartesian.animation(true)
+                            val title = "$studyTur $studyDersAdi $studyKonuAdi $zamanAraligi"
+                            cartesian.title(title)
+
+                            cartesian.yScale().minimum(0.0)
+
+                            cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator:.}dk")
+
+                            cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
+                            cartesian.interactivity().hoverMode(HoverMode.BY_X)
+
+                            cartesian.xAxis(0).title("Tarihler")
+                            cartesian.yAxis(0).title("Çalışılan Süre")
+
+                            anyChartView.setChart(cartesian)
+                        } else if (grafikTuru == "Soru") {
+                            for (document in value) {
+                                val documentKonuAdi = document.get("konuAdi").toString()
+                                val studyCount = document.get("çözülenSoru").toString()
+                                val timestamp = document.get("timestamp") as Timestamp
+
+
+                                val currentDocument = Study(
+                                    documentKonuAdi,
+                                    studyCount,
+                                    studyOwnerID,
+                                    studyDersAdi!!,
+                                    studyTur!!,
+                                    soruSayisi!!,
+                                    timestamp,
+                                    document.id
+                                )
+
+                                konular.add(currentDocument)
+                            }
+                            val data: MutableList<DataEntry> = ArrayList()
+
+
+
+                            for (i in konular) {
+                                val date = i.timestamp.toDate()
+                                val dateFormated = SimpleDateFormat("dd/MM/yyyy").format(date)
+                                data.add(ValueDataEntry(dateFormated, i.soruSayisi.toInt()))
+                            }
+
+                            val column: Column = cartesian.column(data)
+
+                            column.tooltip().titleFormat("{%X}").position(Position.CENTER_BOTTOM)
+                                .anchor(Anchor.CENTER_BOTTOM).offsetX(0.0).offsetY(5.0)
+                                .format("{%Value}{groupsSeparator:.}")
+
+                            cartesian.animation(true)
+                            val title = "$studyTur $studyDersAdi $studyKonuAdi $zamanAraligi"
+                            cartesian.title(title)
+
+                            cartesian.yScale().minimum(0.0)
+
+                            cartesian.yAxis(0).labels().format("{%Value}{groupsSeparator:.}")
+
+                            cartesian.tooltip().positionMode(TooltipPositionMode.POINT)
+                            cartesian.interactivity().hoverMode(HoverMode.BY_X)
+
+                            cartesian.xAxis(0).title("Tarihler")
+                            cartesian.yAxis(0).title("Çözülen Soru Sayısı")
+
+                            anyChartView.setChart(cartesian)
                         }
 
                     }
-            }
 
+                }
         }
 
 

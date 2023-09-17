@@ -14,17 +14,17 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginTop="100dp"
             android:id="@+id/gunSpinnerLayout"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <TextView
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_gravity="center"
                 android:text="@string/g_n_se_iniz"
                 android:textSize="18sp" />
@@ -125,6 +125,31 @@
 
             <NumberPicker
                 android:id="@+id/numberPickerDk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/containerLayout4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/ka_soru">
+
+            </TextView>
+
+            <NumberPicker
+                android:id="@+id/numberPickerSoru"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp" />

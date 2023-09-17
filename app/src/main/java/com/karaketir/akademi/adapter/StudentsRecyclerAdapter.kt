@@ -20,6 +20,7 @@ open class StudentsRecyclerAdapter(
 ) : RecyclerView.Adapter<StudentsRecyclerAdapter.StudentHolder>() {
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private val kurumKodu = 763455
 
     class StudentHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = StudentRowBinding.bind(itemView)
@@ -50,23 +51,21 @@ open class StudentsRecyclerAdapter(
 
                 binding.studentDeleteButton.setOnClickListener {
 
-                    db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                        val kurumKodu = it.get("kurumKodu").toString().toInt()
-                        binding.studentNameTextView.text = myItem.studentName
-                        val removeStudent = AlertDialog.Builder(holder.itemView.context)
-                        removeStudent.setTitle("Öğrenci Çıkar")
-                        removeStudent.setMessage("${myItem.studentName} Öğrencisini Koçluğunuzdan Çıkarmak İstediğinizden Emin misiniz?")
-                        removeStudent.setPositiveButton("ÇIKAR") { _, _ ->
 
-                            db.collection("School").document(kurumKodu.toString())
-                                .collection("Student").document(myItem.id).update("teacher", "")
-                            db.collection("User").document(myItem.id).update("teacher", "")
-                        }
-                        removeStudent.setNegativeButton("İPTAL") { _, _ ->
+                    binding.studentNameTextView.text = myItem.studentName
+                    val removeStudent = AlertDialog.Builder(holder.itemView.context)
+                    removeStudent.setTitle("Öğrenci Çıkar")
+                    removeStudent.setMessage("${myItem.studentName} Öğrencisini Koçluğunuzdan Çıkarmak İstediğinizden Emin misiniz?")
+                    removeStudent.setPositiveButton("ÇIKAR") { _, _ ->
 
-                        }
-                        removeStudent.show()
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(myItem.id).update("teacher", "")
+                        db.collection("User").document(myItem.id).update("teacher", "")
                     }
+                    removeStudent.setNegativeButton("İPTAL") { _, _ ->
+
+                    }
+                    removeStudent.show()
 
 
                 }
@@ -175,32 +174,28 @@ open class StudentsRecyclerAdapter(
                     }
                 }
 
-                db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-                    val kurumKodu = it.get("kurumKodu").toString().toInt()
-                    db.collection("School").document(kurumKodu.toString()).collection("Student")
-                        .document(myItem.id).collection("Studies")
-                        .whereGreaterThan("timestamp", baslangicTarihi)
-                        .whereLessThan("timestamp", bitisTarihi)
-                        .addSnapshotListener { value, error ->
-                            if (error != null) {
-                                println(error.localizedMessage)
-                            }
 
-                            if (value != null) {
-
-                                if (value.isEmpty) {
-                                    binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_error_outline_24)
-                                } else {
-                                    binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
-                                }
-
-                            } else {
-                                binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_error_outline_24)
-                            }
-
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(myItem.id).collection("Studies")
+                    .whereGreaterThan("timestamp", baslangicTarihi)
+                    .whereLessThan("timestamp", bitisTarihi).addSnapshotListener { value, error ->
+                        if (error != null) {
+                            println(error.localizedMessage)
                         }
 
-                }
+                        if (value != null) {
+
+                            if (value.isEmpty) {
+                                binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_error_outline_24)
+                            } else {
+                                binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+                            }
+
+                        } else {
+                            binding.todayStudyImageView.setImageResource(R.drawable.ic_baseline_error_outline_24)
+                        }
+
+                    }
 
 
             }

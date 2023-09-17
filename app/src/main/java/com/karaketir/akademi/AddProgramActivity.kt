@@ -21,7 +21,7 @@ class AddProgramActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private var turler = arrayListOf("TYT", "AYT")
+    private var turler = arrayListOf("TYT", "AYT", "TYT ve AYT")
     private var gun = "Pazartesi"
     private var sayi = 0
     private var dersAdlari = ArrayList<String>()
@@ -29,6 +29,7 @@ class AddProgramActivity : AppCompatActivity() {
     private var secilenDers = "Matematik"
     private var secilenTur = "TYT"
     private var dakika = 0
+    private var soru = 0
     private var values = arrayOf(
         "0",
         "30",
@@ -54,7 +55,7 @@ class AddProgramActivity : AppCompatActivity() {
     private var valuesID = arrayOf(
         "1", "2", "3", "4"
     )
-    private var kurumKodu = 0
+    private val kurumKodu = 763455
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +67,6 @@ class AddProgramActivity : AppCompatActivity() {
         db = Firebase.firestore
 
         val studentID = intent.getStringExtra("studentID").toString()
-        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
         val gunSpinner = binding.gunSpinner
 
         val saveButton = binding.dutySaveButton
@@ -158,7 +158,8 @@ class AddProgramActivity : AppCompatActivity() {
                 "dersGun" to gun,
                 "dersAdi" to secilenDers,
                 "dersTuru" to secilenTur,
-                "dersSure" to dakika
+                "dersSure" to dakika,
+                "dersSoru" to soru
             )
 
             db.collection("School").document(kurumKodu.toString()).collection("Student")
@@ -188,6 +189,15 @@ class AddProgramActivity : AppCompatActivity() {
         sayiPicker.wrapSelectorWheel = true
         sayiPicker.setOnValueChangedListener { _, _, newVal ->
             sayi = valuesID[newVal].toInt() - 1
+        }
+
+        val soruPicker = binding.numberPickerSoru
+        soruPicker.minValue = 0
+        soruPicker.maxValue = valuesID.size - 1
+        soruPicker.displayedValues = valuesID
+        soruPicker.wrapSelectorWheel = true
+        soruPicker.setOnValueChangedListener { _, _, newVal ->
+            soru = values[newVal].toInt()
         }
     }
 }

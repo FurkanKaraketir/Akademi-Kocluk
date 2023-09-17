@@ -19,8 +19,8 @@ android {
         applicationId "com.karaketir.akademi"
         minSdk 22
         targetSdk 33
-        versionCode 16
-        versionName "v0.1.6"
+        versionCode 17
+        versionName "v0.1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.github.SUPERCILEX.poi-android:poi:3.17'
     compileOnly 'org.apache.poi:poi-ooxml:3.17'
-    implementation('com.google.firebase:firebase-auth-ktx:22.1.1') {
+    implementation('com.google.firebase:firebase-auth-ktx:22.1.2') {
         exclude module: "play-services-safetynet"
     }
 
@@ -63,16 +63,16 @@ dependencies {
     implementation 'com.android.billingclient:billing:6.0.1'
     implementation 'com.revenuecat.purchases:purchases:6.0.0'
 
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.7.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.8.1'
     implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.1'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.3'
     implementation 'com.google.firebase:firebase-perf-ktx:20.4.1'
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
 
     implementation 'io.github.ShawnLin013:number-picker:2.4.13'
 
-    implementation 'com.google.android.gms:play-services-ads:22.3.0'
+    implementation 'com.google.android.gms:play-services-ads:22.4.0'
     implementation 'com.github.iwgang:countdownview:2.1.6'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.bumptech.glide:glide:4.14.2'

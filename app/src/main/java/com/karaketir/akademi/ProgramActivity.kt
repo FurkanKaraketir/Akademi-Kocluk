@@ -29,7 +29,7 @@ class ProgramActivity : AppCompatActivity() {
     private var cumartesiList = ArrayList<Ders>()
     private var pazarList = ArrayList<Ders>()
 
-    private var kurumKodu = 0
+    private val kurumKodu = 763455
     private var personType = "Student"
 
 
@@ -108,7 +108,6 @@ class ProgramActivity : AppCompatActivity() {
 
 
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            kurumKodu = it.get("kurumKodu").toString().toInt()
             personType = it.get("personType").toString()
 
             if (personType == "Student") {
@@ -117,8 +116,6 @@ class ProgramActivity : AppCompatActivity() {
             } else {
                 addLessonButton.visibility = View.VISIBLE
             }
-
-
 
             db.collection("School").document(kurumKodu.toString()).collection("Student")
                 .document(studentID).collection("DersProgrami").document("Pazartesi")
@@ -132,12 +129,14 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
@@ -159,15 +158,18 @@ class ProgramActivity : AppCompatActivity() {
                         saliList.clear()
                         for (i in value) {
 
+
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
@@ -192,15 +194,18 @@ class ProgramActivity : AppCompatActivity() {
                         carsambaList.clear()
                         for (i in value) {
 
+
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
@@ -227,17 +232,18 @@ class ProgramActivity : AppCompatActivity() {
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
                             )
-
                             persembeList.add(newDers)
                             recyclerPersembeAdapter.notifyDataSetChanged()
 
@@ -257,15 +263,18 @@ class ProgramActivity : AppCompatActivity() {
                         cumaList.clear()
                         for (i in value) {
 
+
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
@@ -289,15 +298,18 @@ class ProgramActivity : AppCompatActivity() {
                         cumartesiList.clear()
                         for (i in value) {
 
+
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun
@@ -321,15 +333,18 @@ class ProgramActivity : AppCompatActivity() {
                         pazarList.clear()
                         for (i in value) {
 
+
                             val newDersAdi = i.get("dersAdi").toString()
                             val newDersTuru = i.get("dersTuru").toString()
                             val newDersSure = i.get("dersSure").toString().toInt()
+                            val newDersSoru = i.get("dersSoru").toString().toInt()
                             val newDersNumara = i.get("id").toString()
                             val newGun = i.get("dersGun").toString()
                             val newDers = Ders(
                                 newDersAdi,
                                 newDersTuru,
                                 newDersSure,
+                                newDersSoru,
                                 newDersNumara,
                                 studentID,
                                 newGun

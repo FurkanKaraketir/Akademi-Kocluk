@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="200dp"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
@@ -25,9 +26,9 @@
             android:id="@+id/dersAdiProgram"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
+            android:layout_margin="10dp"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/dersTuruProgram"
@@ -36,20 +37,53 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp" />
 
-        <TextView
-            android:id="@+id/derSureProgram"
-            style="@style/TextAppearance.AppCompat.Title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="" />
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/haftaSureImage"
+            <TextView
+                android:id="@+id/derSureProgram"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/haftaSureImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/ic_baseline_error_outline_24" />
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:src="@drawable/ic_baseline_error_outline_24"
-            android:layout_margin="10dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <TextView
+                android:id="@+id/derSoruProgram"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/haftaSoruImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:contentDescription="@string/add_something"
+                android:src="@drawable/ic_baseline_error_outline_24" />
+        </LinearLayout>
+
 
     </LinearLayout>
 

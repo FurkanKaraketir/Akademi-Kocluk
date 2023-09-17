@@ -49,6 +49,7 @@ class PaywallFragment : Fragment() {
                 is PaywallItem.Title -> {
                     // Do nothing
                 }
+
             }
         })
 
