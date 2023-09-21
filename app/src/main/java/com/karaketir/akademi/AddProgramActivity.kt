@@ -193,11 +193,11 @@ class AddProgramActivity : AppCompatActivity() {
 
         val soruPicker = binding.numberPickerSoru
         soruPicker.minValue = 0
-        soruPicker.maxValue = valuesID.size - 1
-        soruPicker.displayedValues = valuesID
+        soruPicker.maxValue = values.size - 1
+        soruPicker.displayedValues = values
         soruPicker.wrapSelectorWheel = true
         soruPicker.setOnValueChangedListener { _, _, newVal ->
-            soru = values[newVal].toInt()
+            dakika = values[newVal].toInt()
         }
     }
 }

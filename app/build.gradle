@@ -18,9 +18,9 @@ android {
     defaultConfig {
         applicationId "com.karaketir.akademi"
         minSdk 22
-        targetSdk 33
-        versionCode 17
-        versionName "v0.1.7"
+        targetSdk 34
+        versionCode 18
+        versionName "v0.1.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

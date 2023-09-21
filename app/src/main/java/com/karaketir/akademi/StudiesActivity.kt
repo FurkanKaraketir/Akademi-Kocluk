@@ -107,6 +107,13 @@ class StudiesActivity : AppCompatActivity() {
         val zamanAraligiTextView = binding.zamanAraligiTextView
         val excelCreateButton = binding.excelStudentButton
         val konular = binding.tamamlananKonular
+        val screenTime = binding.screenTimeButton
+
+        screenTime.setOnClickListener {
+            val newIntent = Intent(this, ScreenTimesActivity::class.java)
+            newIntent.putExtra("studentID", studentID)
+            this.startActivity(newIntent)
+        }
 
         konular.setOnClickListener {
             val newIntent = Intent(this, SubjectCompActivity::class.java)

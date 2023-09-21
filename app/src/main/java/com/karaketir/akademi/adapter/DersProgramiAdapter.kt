@@ -12,7 +12,7 @@ import com.karaketir.akademi.databinding.ProgramRowBinding
 import com.karaketir.akademi.models.Ders
 import java.util.Calendar
 
-class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
+class DersProgramiAdapter(private val dersList: ArrayList<Ders>, private var secilenZaman: Int) :
     RecyclerView.Adapter<DersProgramiAdapter.DersHolder>() {
 
     private lateinit var db: FirebaseFirestore
@@ -66,69 +66,148 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>) :
             var baslangicTarihi = cal.time
             var bitisTarihi = cal.time
 
+            when (secilenZaman) {
+                0 -> {
+                    when (myItem.gun) {
+                        "Pazartesi" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            baslangicTarihi = cal.time
 
-            when (myItem.gun) {
-                "Pazartesi" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    baslangicTarihi = cal.time
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
+                        }
+
+                        "Salı" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Çarşamba" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 2)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Perşembe" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 3)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Cuma" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 4)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Cumartesi" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 5)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Pazar" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, 6)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+                    }
 
                 }
 
-                "Salı" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    baslangicTarihi = cal.time
+                1 -> {
+                    when (myItem.gun) {
+                        "Pazartesi" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            baslangicTarihi = cal.time
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
-                }
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
 
-                "Çarşamba" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 2)
-                    baslangicTarihi = cal.time
+                        }
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
-                }
+                        "Salı" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            baslangicTarihi = cal.time
 
-                "Perşembe" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 3)
-                    baslangicTarihi = cal.time
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
-                }
+                        "Çarşamba" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 2)
+                            baslangicTarihi = cal.time
 
-                "Cuma" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 4)
-                    baslangicTarihi = cal.time
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
-                }
+                        "Perşembe" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 3)
+                            baslangicTarihi = cal.time
 
-                "Cumartesi" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 5)
-                    baslangicTarihi = cal.time
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
-                }
+                        "Cuma" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 4)
+                            baslangicTarihi = cal.time
 
-                "Pazar" -> {
-                    cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                    cal.add(Calendar.DAY_OF_YEAR, 6)
-                    baslangicTarihi = cal.time
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
 
-                    cal.add(Calendar.DAY_OF_YEAR, 1)
-                    bitisTarihi = cal.time
+                        "Cumartesi" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 5)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+
+                        "Pazar" -> {
+                            cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
+                            cal.add(Calendar.DAY_OF_YEAR, -7)
+                            cal.add(Calendar.DAY_OF_YEAR, 6)
+                            baslangicTarihi = cal.time
+
+                            cal.add(Calendar.DAY_OF_YEAR, 1)
+                            bitisTarihi = cal.time
+                        }
+                    }
+
                 }
             }
 

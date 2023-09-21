@@ -88,6 +88,7 @@ class AddPrgrphPrblmActivity : AppCompatActivity() {
             var stopper2 = false
             val cal = Calendar.getInstance()
             val studyTime = Calendar.getInstance()
+            studyTime.add(Calendar.HOUR_OF_DAY, -3)
 
             cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
 
@@ -129,8 +130,8 @@ class AddPrgrphPrblmActivity : AppCompatActivity() {
                                     val studyUpdate = hashMapOf(
                                         "id" to document.id,
                                         "timestamp" to studyTime.time,
-                                        "konuAnlatımı" to document.get("konuAnlatımı")
-                                            .toString().toInt(),
+                                        "konuAnlatımı" to document.get("konuAnlatımı").toString()
+                                            .toInt(),
                                         "konuTestiDK" to soruDk + document.get("konuTestiDK")
                                             .toString().toInt(),
                                         "tür" to subjectType,
@@ -278,10 +279,8 @@ class AddPrgrphPrblmActivity : AppCompatActivity() {
                                     .addOnSuccessListener {
 
                                         if (!stopper2) {
-                                            db.collection("School")
-                                                .document(kurumKodu.toString())
-                                                .collection("Student")
-                                                .document(auth.uid.toString())
+                                            db.collection("School").document(kurumKodu.toString())
+                                                .collection("Student").document(auth.uid.toString())
                                                 .collection("Duties").whereGreaterThan(
                                                     "bitisZamani", studyTime.time
                                                 ).whereEqualTo(
@@ -305,12 +304,10 @@ class AddPrgrphPrblmActivity : AppCompatActivity() {
                                                                 val gorevUpdate = hashMapOf(
                                                                     "toplamCalisma" to document5.get(
                                                                         "toplamCalisma"
-                                                                    ).toString()
-                                                                        .toInt() - (soruDk),
+                                                                    ).toString().toInt() - (soruDk),
                                                                     "çözülenSoru" to document5.get(
                                                                         "çözülenSoru"
-                                                                    ).toString()
-                                                                        .toInt() - soruSayi
+                                                                    ).toString().toInt() - soruSayi
                                                                 )
 
                                                                 if (!stopper2) {
@@ -353,20 +350,17 @@ class AddPrgrphPrblmActivity : AppCompatActivity() {
                                                                             ).document(
                                                                                 document5.id
                                                                             ).update(
-                                                                                "tamamlandi",
-                                                                                true
-                                                                            )
-                                                                                .addOnSuccessListener {
-                                                                                    stopper2 =
-                                                                                        true
+                                                                                "tamamlandi", true
+                                                                            ).addOnSuccessListener {
+                                                                                stopper2 = true
 
-                                                                                    Toast.makeText(
-                                                                                        this,
-                                                                                        "İşlem Başarılı!",
-                                                                                        Toast.LENGTH_SHORT
-                                                                                    ).show()
-                                                                                    finish()
-                                                                                }
+                                                                                Toast.makeText(
+                                                                                    this,
+                                                                                    "İşlem Başarılı!",
+                                                                                    Toast.LENGTH_SHORT
+                                                                                ).show()
+                                                                                finish()
+                                                                            }
                                                                         } else {
                                                                             stopper2 = true
                                                                             Toast.makeText(

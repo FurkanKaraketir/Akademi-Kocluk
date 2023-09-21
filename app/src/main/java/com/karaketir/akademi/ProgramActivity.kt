@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,10 +31,19 @@ class ProgramActivity : AppCompatActivity() {
     private var cumaList = ArrayList<Ders>()
     private var cumartesiList = ArrayList<Ders>()
     private var pazarList = ArrayList<Ders>()
-
+    private var secilenZaman = 0
     private val kurumKodu = 763455
     private var personType = "Student"
-
+    private lateinit var recyclerPazartesiAdapter: DersProgramiAdapter
+    private lateinit var recyclerPazarAdapter: DersProgramiAdapter
+    private lateinit var recyclerSaliAdapter: DersProgramiAdapter
+    private lateinit var recyclerCarsambaAdapter: DersProgramiAdapter
+    private lateinit var recyclerPersembeAdapter: DersProgramiAdapter
+    private lateinit var recyclerCumaAdapter: DersProgramiAdapter
+    private lateinit var recyclerCumartesiAdapter: DersProgramiAdapter
+    private lateinit var studentID: String
+    private lateinit var addLessonButton: FloatingActionButton
+    private val zamanAraliklari = arrayOf("Bu Hafta", "Geçen Hafta")
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +53,62 @@ class ProgramActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         db = Firebase.firestore
-        val addLessonButton = binding.addLessonButton
+
+        studentID = intent.getStringExtra("studentID").toString()
+
+        addLessonButton = binding.addLessonButton
+
+        addLessonButton.setOnClickListener {
+            val newIntent = Intent(this, AddProgramActivity::class.java)
+            newIntent.putExtra("studentID", studentID)
+            newIntent.putExtra("kurumKodu", kurumKodu.toString())
+            this.startActivity(newIntent)
+        }
+        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
+            personType = it.get("personType").toString()
+
+            if (personType == "Student") {
+                addLessonButton.visibility = View.GONE
+                binding.timeSpinnerLayout.visibility = View.GONE
+
+                studentID = auth.uid.toString()
+
+            } else {
+                addLessonButton.visibility = View.VISIBLE
+                binding.timeSpinnerLayout.visibility = View.VISIBLE
+            }
+            hello()
+        }
+
+
+        val timeAdapter = ArrayAdapter(
+            this@ProgramActivity, android.R.layout.simple_spinner_dropdown_item, zamanAraliklari
+        )
+
+        timeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.timeSpinner.adapter = timeAdapter
+        binding.timeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+                secilenZaman = p2
+                hello()
+
+
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+        }
+
+
+    }
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun hello() {
+
+
         val layoutManager0 = LinearLayoutManager(this)
         val layoutManager1 = LinearLayoutManager(this)
         val layoutManager2 = LinearLayoutManager(this)
@@ -50,61 +117,46 @@ class ProgramActivity : AppCompatActivity() {
         val layoutManager5 = LinearLayoutManager(this)
         val layoutManager6 = LinearLayoutManager(this)
 
-        var studentID = intent.getStringExtra("studentID").toString()
-
-
         val recyclerPazartesi = binding.recyclerPazartesi
-        val recyclerPazartesiAdapter = DersProgramiAdapter(pazartesiList)
+        recyclerPazartesiAdapter = DersProgramiAdapter(pazartesiList, secilenZaman)
         recyclerPazartesi.layoutManager = layoutManager0
         recyclerPazartesi.adapter = recyclerPazartesiAdapter
 
 
         val recyclerSali = binding.recyclerSali
-        val recyclerSaliAdapter = DersProgramiAdapter(saliList)
+        recyclerSaliAdapter = DersProgramiAdapter(saliList, secilenZaman)
         recyclerSali.layoutManager = layoutManager1
         recyclerSali.adapter = recyclerSaliAdapter
 
 
         val recyclerCarsamba = binding.recyclerCarsamba
-        val recyclerCarsambaAdapter = DersProgramiAdapter(carsambaList)
+        recyclerCarsambaAdapter = DersProgramiAdapter(carsambaList, secilenZaman)
         recyclerCarsamba.layoutManager = layoutManager2
         recyclerCarsamba.adapter = recyclerCarsambaAdapter
 
 
         val recyclerPersembe = binding.recyclerPersembe
-        val recyclerPersembeAdapter = DersProgramiAdapter(persembeList)
+        recyclerPersembeAdapter = DersProgramiAdapter(persembeList, secilenZaman)
         recyclerPersembe.layoutManager = layoutManager3
         recyclerPersembe.adapter = recyclerPersembeAdapter
 
 
         val recyclerCuma = binding.recyclerCuma
-        val recyclerCumaAdapter = DersProgramiAdapter(cumaList)
+        recyclerCumaAdapter = DersProgramiAdapter(cumaList, secilenZaman)
         recyclerCuma.layoutManager = layoutManager4
         recyclerCuma.adapter = recyclerCumaAdapter
 
 
         val recyclerCumartesi = binding.recyclerCumartesi
-        val recyclerCumartesiAdapter = DersProgramiAdapter(cumartesiList)
+        recyclerCumartesiAdapter = DersProgramiAdapter(cumartesiList, secilenZaman)
         recyclerCumartesi.layoutManager = layoutManager5
         recyclerCumartesi.adapter = recyclerCumartesiAdapter
 
 
         val registerPazar = binding.recyclerPazar
-        val recyclerPazarAdapter = DersProgramiAdapter(pazarList)
+        recyclerPazarAdapter = DersProgramiAdapter(pazarList, secilenZaman)
         registerPazar.layoutManager = layoutManager6
         registerPazar.adapter = recyclerPazarAdapter
-
-
-
-        addLessonButton.setOnClickListener {
-            val newIntent = Intent(this, AddProgramActivity::class.java)
-            newIntent.putExtra("studentID", studentID)
-            newIntent.putExtra("kurumKodu", kurumKodu.toString())
-            this.startActivity(newIntent)
-        }
-
-
-
 
 
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
@@ -112,9 +164,12 @@ class ProgramActivity : AppCompatActivity() {
 
             if (personType == "Student") {
                 addLessonButton.visibility = View.GONE
+                binding.timeSpinnerLayout.visibility = View.GONE
+
                 studentID = auth.uid.toString()
             } else {
                 addLessonButton.visibility = View.VISIBLE
+                binding.timeSpinnerLayout.visibility = View.VISIBLE
             }
 
             db.collection("School").document(kurumKodu.toString()).collection("Student")
@@ -361,7 +416,6 @@ class ProgramActivity : AppCompatActivity() {
 
 
         }
-
 
     }
 

@@ -47,20 +47,34 @@ class SubjectAdapter(private val subjectList: ArrayList<Subject>, private val st
                 println(active)
 
                 binding.subjectName.text = myItem.name
-                binding.subjectName.setOnClickListener {
+                binding.myCard.setOnClickListener {
                     if (active) {
 
 
-                        if (myItem.stats) {
-                            db.collection("School").document("763455").collection("Student")
-                                .document(studentID).collection("tamamlananKonular")
-                                .document(myItem.name).delete()
-                        } else {
+                        if (!myItem.stats) {
                             db.collection("School").document("763455").collection("Student")
                                 .document(studentID).collection("tamamlananKonular")
                                 .document(myItem.name).set(
-                                    hashMapOf("konuAdi" to myItem.name)
+                                    hashMapOf(
+                                        "konuAdi" to myItem.name, "times" to 1
+                                    )
                                 )
+                        } else {
+
+                            if (myItem.times != 3) {
+                                db.collection("School").document("763455").collection("Student")
+                                    .document(studentID).collection("tamamlananKonular")
+                                    .document(myItem.name).set(
+                                        hashMapOf(
+                                            "konuAdi" to myItem.name, "times" to myItem.times + 1
+                                        )
+                                    )
+                            } else {
+                                db.collection("School").document("763455").collection("Student")
+                                    .document(studentID).collection("tamamlananKonular")
+                                    .document(myItem.name).delete()
+                            }
+
 
                         }
                     }
@@ -73,6 +87,20 @@ class SubjectAdapter(private val subjectList: ArrayList<Subject>, private val st
 
             if (myItem.stats) {
                 binding.subjectStats.setImageResource(R.drawable.ic_baseline_check_circle_outline_24)
+
+                if (myItem.times >= 2) {
+                    binding.subjectStats2.visibility = View.VISIBLE
+                    if (myItem.times == 3) {
+                        binding.subjectStats3.visibility = View.VISIBLE
+                    } else {
+                        binding.subjectStats3.visibility = View.GONE
+
+                    }
+                } else {
+                    binding.subjectStats2.visibility = View.GONE
+                    binding.subjectStats3.visibility = View.GONE
+
+                }
 
             } else {
                 binding.subjectStats.setImageResource(R.drawable.ic_baseline_error_outline_24)

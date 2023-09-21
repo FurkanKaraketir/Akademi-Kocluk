@@ -30,7 +30,7 @@ class SubjectCompActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private val dersList = ArrayList<String>()
-    private val benimKonularim = ArrayList<String>()
+    private val benimKonularim = HashMap<String, Int>()
     private var studentID = ""
     private lateinit var progressBar: ProgressBar
 
@@ -341,17 +341,18 @@ class SubjectCompActivity : AppCompatActivity() {
                                 benimKonularim.clear()
                                 for (i in benimKonuAdlarim) {
                                     val newMyName = i.get("konuAdi").toString()
-                                    benimKonularim.add(newMyName)
+                                    val newCount = i.get("times").toString().toInt()
+                                    benimKonularim[newMyName] = newCount
                                 }
                                 var myCount = 0
                                 subjectList.clear()
                                 for (a in dersList) {
                                     if (a in benimKonularim) {
                                         myCount += 1
-                                        val newSubject = Subject(a, true)
+                                        val newSubject = Subject(a, true, benimKonularim[a]!!)
                                         subjectList.add(newSubject)
                                     } else {
-                                        val newSubject = Subject(a, false)
+                                        val newSubject = Subject(a, false, 0)
                                         subjectList.add(newSubject)
                                     }
                                 }

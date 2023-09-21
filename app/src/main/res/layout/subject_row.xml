@@ -30,6 +30,25 @@
             android:contentDescription="@string/add_something"
             android:src="@drawable/ic_baseline_error_outline_24" />
 
+        <ImageView
+            android:id="@+id/subjectStats2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:layout_toStartOf="@id/subjectStats"
+            android:contentDescription="@string/add_something"
+            android:src="@drawable/ic_baseline_check_circle_outline_24"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/subjectStats3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:layout_toStartOf="@id/subjectStats2"
+            android:contentDescription="@string/add_something"
+            android:src="@drawable/ic_baseline_check_circle_outline_24"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

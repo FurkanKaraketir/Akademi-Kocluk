@@ -22,9 +22,9 @@
     <string name="al_man_n_dersini_ve_konusunu_belirle">Çalışmanın Dersini ve Konusunu Seç</string>
     <string name="matematik">Matematik</string>
     <string name="fizik">Fizik</string>
-    <string name="ka_dakika_konu_al_t_n">Kaç Dakika Konu Çalıştın?</string>
-    <string name="ka_tane_soru_zd_n">Kaç Tane Soru Çözdün?</string>
-    <string name="ka_dakika_testi_zd_n">Kaç Dakika Test Çözdün?</string>
+    <string name="ka_dakika_konu_al_t_n">Kaç Dakika\nKonu Çalıştın?</string>
+    <string name="ka_tane_soru_zd_n">Kaç Tane\nSoru Çözdün?</string>
+    <string name="ka_dakika_testi_zd_n">Kaç Dakika\nTest Çözdün?</string>
     <string name="konu">Konu:</string>
     <string name="b_tt">BİTTİ</string>
     <string name="saya">Sayaç</string>
@@ -141,4 +141,10 @@
     <string name="ders_se">Ders Seç</string>
     <string name="konular">Konular</string>
     <string name="ka_soru">Kaç Soru?</string>
+    <string name="s_ralama_kriteri">Sıralama Kriteri</string>
+    <string name="sonu_lar_getir">Sonuçları Getir</string>
+    <string name="ekran_s_resi">Ekran Süresi</string>
+    <string name="tarih_se">Tarih Seç</string>
+    <string name="ekran_s_resi_dakika_olarak">Ekran Süresi (Dakika Olarak)</string>
+    <string name="zaman">Zaman</string>
 </resources>

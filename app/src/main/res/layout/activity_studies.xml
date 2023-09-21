@@ -83,6 +83,17 @@
                         app:icon="@drawable/ic_baseline_outlined_flag_24" />
 
                     <Button
+                        android:id="@+id/screenTimeButton"
+                        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="@string/ekran_s_resi"
+                        android:textSize="15sp"
+                        app:icon="@drawable/ic_baseline_timelapse_24" />
+
+                    <Button
                         android:id="@+id/tamamlananKonular"
                         style="@style/Widget.Material3.Button.ElevatedButton.Icon"
                         android:layout_width="wrap_content"

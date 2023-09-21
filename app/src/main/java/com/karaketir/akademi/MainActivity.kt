@@ -176,6 +176,13 @@ class MainActivity : AppCompatActivity() {
         val dersProgramiButton = binding.dersProgramiButton
         val noReportButton = binding.noReportButton
         val subjectsButton = binding.konuButton
+        val screenTimeButton = binding.screenTimeButton
+
+        screenTimeButton.setOnClickListener {
+            val newIntent = Intent(this, ScreenTimesActivity::class.java)
+            newIntent.putExtra("studentID", auth.uid.toString())
+            this.startActivity(newIntent)
+        }
 
         subjectsButton.setOnClickListener {
             val newIntent = Intent(this, SubjectCompActivity::class.java)
@@ -331,6 +338,7 @@ class MainActivity : AppCompatActivity() {
                     subjectsButton.visibility = View.VISIBLE
                     studySearchEditText.visibility = View.VISIBLE
                     searchEditText.visibility = View.GONE
+                    screenTimeButton.visibility = View.VISIBLE
                     studentDenemeButton.visibility = View.VISIBLE
                     teacherDenemeButton.visibility = View.GONE
                     hedeflerStudentButton.visibility = View.VISIBLE
@@ -389,6 +397,7 @@ class MainActivity : AppCompatActivity() {
 
 
                 } else if (it.get("personType").toString() == "Teacher") {
+                    screenTimeButton.visibility = View.GONE
                     studySearchEditText.visibility = View.GONE
                     dersProgramiButton.visibility = View.GONE
                     hedeflerStudentButton.visibility = View.GONE
@@ -419,13 +428,7 @@ class MainActivity : AppCompatActivity() {
 
                     excelButton.setOnClickListener {
                         addData(
-                            sheet,
-                            secilenZaman,
-                            secilenGrade,
-                            auth,
-                            db,
-                            this,
-                            workbook
+                            sheet, secilenZaman, secilenGrade, auth, db, this, workbook
                         )
 
                         askForPermissions()
