@@ -197,7 +197,7 @@ class AddProgramActivity : AppCompatActivity() {
         soruPicker.displayedValues = values
         soruPicker.wrapSelectorWheel = true
         soruPicker.setOnValueChangedListener { _, _, newVal ->
-            dakika = values[newVal].toInt()
+            soru = values[newVal].toInt()
         }
     }
 }

@@ -1,19 +1,24 @@
 package com.karaketir.akademi.adapter
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.karaketir.akademi.EditProgramActivity
 import com.karaketir.akademi.R
 import com.karaketir.akademi.databinding.ProgramRowBinding
 import com.karaketir.akademi.models.Ders
 import java.util.Calendar
 
-class DersProgramiAdapter(private val dersList: ArrayList<Ders>, private var secilenZaman: Int) :
-    RecyclerView.Adapter<DersProgramiAdapter.DersHolder>() {
+class DersProgramiAdapter(
+    private val dersList: ArrayList<Ders>,
+    private var secilenZaman: Int,
+    private val personType: String
+) : RecyclerView.Adapter<DersProgramiAdapter.DersHolder>() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
@@ -314,6 +319,21 @@ class DersProgramiAdapter(private val dersList: ArrayList<Ders>, private var sec
                         }
 
                     }
+            }
+
+
+            if (personType == "Teacher") {
+
+                binding.myCard.setOnClickListener {
+
+                    val newIntent = Intent(holder.itemView.context, EditProgramActivity::class.java)
+                    newIntent.putExtra("studentID", myItem.studentOwnerID)
+                    newIntent.putExtra("gun", myItem.gun)
+                    newIntent.putExtra("count", myItem.dersNumara)
+                    holder.itemView.context.startActivity(newIntent)
+
+                }
+
             }
 
 

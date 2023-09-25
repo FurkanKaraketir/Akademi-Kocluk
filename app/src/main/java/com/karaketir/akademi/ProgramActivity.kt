@@ -1,11 +1,13 @@
 package com.karaketir.akademi
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -67,6 +69,8 @@ class ProgramActivity : AppCompatActivity() {
         db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
             personType = it.get("personType").toString()
 
+
+
             if (personType == "Student") {
                 addLessonButton.visibility = View.GONE
                 binding.timeSpinnerLayout.visibility = View.GONE
@@ -76,6 +80,29 @@ class ProgramActivity : AppCompatActivity() {
             } else {
                 addLessonButton.visibility = View.VISIBLE
                 binding.timeSpinnerLayout.visibility = View.VISIBLE
+
+
+                binding.paz.setOnClickListener {
+                    deleteProgramDay("Pazartesi")
+                }
+                binding.sal.setOnClickListener {
+                    deleteProgramDay("Salı")
+                }
+                binding.car.setOnClickListener {
+                    deleteProgramDay("Çarşamba")
+                }
+                binding.per.setOnClickListener {
+                    deleteProgramDay("Perşembe")
+                }
+                binding.cum.setOnClickListener {
+                    deleteProgramDay("Cuma")
+                }
+                binding.cmt.setOnClickListener {
+                    deleteProgramDay("Cumartesi")
+                }
+                binding.pzr.setOnClickListener {
+                    deleteProgramDay("Pazar")
+                }
             }
             hello()
         }
@@ -104,6 +131,39 @@ class ProgramActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteProgramDay(day: String) {
+
+
+        val signOutAlertDialog = AlertDialog.Builder(this)
+        signOutAlertDialog.setTitle("$day Sil")
+        signOutAlertDialog.setMessage("Silmek İstediğinize Emin misiniz?")
+        signOutAlertDialog.setPositiveButton("Sil") { _, _ ->
+
+            db.collection("School").document("763455").collection("Student").document(studentID)
+                .collection("DersProgrami").document(day).collection("Dersler").document("0")
+                .delete()
+            db.collection("School").document("763455").collection("Student").document(studentID)
+                .collection("DersProgrami").document(day).collection("Dersler").document("1")
+                .delete()
+            db.collection("School").document("763455").collection("Student").document(studentID)
+                .collection("DersProgrami").document(day).collection("Dersler").document("2")
+                .delete()
+            db.collection("School").document("763455").collection("Student").document(studentID)
+                .collection("DersProgrami").document(day).collection("Dersler").document("3")
+                .delete()
+
+            Toast.makeText(this, "İşlem Başarılı", Toast.LENGTH_SHORT).show()
+
+        }
+        signOutAlertDialog.setNegativeButton("İptal") { _, _ ->
+
+        }
+        signOutAlertDialog.show()
+
+
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     private fun hello() {
@@ -118,43 +178,43 @@ class ProgramActivity : AppCompatActivity() {
         val layoutManager6 = LinearLayoutManager(this)
 
         val recyclerPazartesi = binding.recyclerPazartesi
-        recyclerPazartesiAdapter = DersProgramiAdapter(pazartesiList, secilenZaman)
+        recyclerPazartesiAdapter = DersProgramiAdapter(pazartesiList, secilenZaman, personType)
         recyclerPazartesi.layoutManager = layoutManager0
         recyclerPazartesi.adapter = recyclerPazartesiAdapter
 
 
         val recyclerSali = binding.recyclerSali
-        recyclerSaliAdapter = DersProgramiAdapter(saliList, secilenZaman)
+        recyclerSaliAdapter = DersProgramiAdapter(saliList, secilenZaman, personType)
         recyclerSali.layoutManager = layoutManager1
         recyclerSali.adapter = recyclerSaliAdapter
 
 
         val recyclerCarsamba = binding.recyclerCarsamba
-        recyclerCarsambaAdapter = DersProgramiAdapter(carsambaList, secilenZaman)
+        recyclerCarsambaAdapter = DersProgramiAdapter(carsambaList, secilenZaman, personType)
         recyclerCarsamba.layoutManager = layoutManager2
         recyclerCarsamba.adapter = recyclerCarsambaAdapter
 
 
         val recyclerPersembe = binding.recyclerPersembe
-        recyclerPersembeAdapter = DersProgramiAdapter(persembeList, secilenZaman)
+        recyclerPersembeAdapter = DersProgramiAdapter(persembeList, secilenZaman, personType)
         recyclerPersembe.layoutManager = layoutManager3
         recyclerPersembe.adapter = recyclerPersembeAdapter
 
 
         val recyclerCuma = binding.recyclerCuma
-        recyclerCumaAdapter = DersProgramiAdapter(cumaList, secilenZaman)
+        recyclerCumaAdapter = DersProgramiAdapter(cumaList, secilenZaman, personType)
         recyclerCuma.layoutManager = layoutManager4
         recyclerCuma.adapter = recyclerCumaAdapter
 
 
         val recyclerCumartesi = binding.recyclerCumartesi
-        recyclerCumartesiAdapter = DersProgramiAdapter(cumartesiList, secilenZaman)
+        recyclerCumartesiAdapter = DersProgramiAdapter(cumartesiList, secilenZaman, personType)
         recyclerCumartesi.layoutManager = layoutManager5
         recyclerCumartesi.adapter = recyclerCumartesiAdapter
 
 
         val registerPazar = binding.recyclerPazar
-        recyclerPazarAdapter = DersProgramiAdapter(pazarList, secilenZaman)
+        recyclerPazarAdapter = DersProgramiAdapter(pazarList, secilenZaman, personType)
         registerPazar.layoutManager = layoutManager6
         registerPazar.adapter = recyclerPazarAdapter
 
