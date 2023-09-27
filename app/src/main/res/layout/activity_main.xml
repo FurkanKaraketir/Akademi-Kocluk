@@ -21,6 +21,12 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="10dp">
 
+                <ImageView
+                    android:id="@+id/imageHalit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/add_something"
+                    android:scaleType="centerCrop" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -65,7 +71,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:shadowRadius="10" />
 
                     <LinearLayout
                         android:id="@+id/teacherSpinnerLayout"

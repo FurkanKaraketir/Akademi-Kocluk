@@ -172,6 +172,7 @@ class MainActivity : AppCompatActivity() {
         val searchBarTeacher = binding.searchBarTeacher
         val updateLayout = binding.updateLayout
         val updateButton = binding.updateButton
+        val imageHalit = binding.imageHalit
         val excelButton = binding.excelButton
         val dersProgramiButton = binding.dersProgramiButton
         val noReportButton = binding.noReportButton
@@ -194,6 +195,11 @@ class MainActivity : AppCompatActivity() {
             openLink(
                 "https://www.linkedin.com/in/furkankaraketir/", this
             )
+        }
+
+        db.collection("UserPhotos").document(auth.uid.toString()).get().addOnSuccessListener {
+            imageHalit.glide(it.get("photoURL").toString(), placeHolderYap(applicationContext))
+
         }
 
         updateButton.setOnClickListener {
