@@ -19,8 +19,8 @@ android {
         applicationId "com.karaketir.akademi"
         minSdk 22
         targetSdk 34
-        versionCode 20
-        versionName "v0.2.0"
+        versionCode 21
+        versionName "v0.2.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -45,12 +45,12 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:30.4.1')
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation "com.andkulikov:transitionseverywhere:1.8.1"
     implementation 'com.github.AnyChart:AnyChart-Android:1.1.2'
     implementation 'com.github.SUPERCILEX.poi-android:poi:3.17'
     compileOnly 'org.apache.poi:poi-ooxml:3.17'
-    implementation('com.google.firebase:firebase-auth-ktx:22.1.2') {
+    implementation('com.google.firebase:firebase-auth-ktx:22.2.0') {
         exclude module: "play-services-safetynet"
     }
 
@@ -63,22 +63,22 @@ dependencies {
     implementation 'com.android.billingclient:billing:6.0.1'
     implementation 'com.revenuecat.purchases:purchases:6.0.0'
 
-    implementation 'com.google.firebase:firebase-firestore-ktx:24.8.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.9.1'
     implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'com.google.firebase:firebase-analytics-ktx:21.3.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.4.3'
-    implementation 'com.google.firebase:firebase-perf-ktx:20.4.1'
-    implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.5.0'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:18.5.1'
+    implementation 'com.google.firebase:firebase-perf-ktx:20.5.0'
+    implementation 'com.google.firebase:firebase-storage-ktx:20.3.0'
 
     implementation 'io.github.ShawnLin013:number-picker:2.4.13'
 
-    implementation 'com.google.android.gms:play-services-ads:22.4.0'
+    implementation 'com.google.android.gms:play-services-ads:22.5.0'
     implementation 'com.github.iwgang:countdownview:2.1.6'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-messaging-ktx:23.2.1'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.3.1'
     implementation 'com.android.volley:volley:1.2.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
