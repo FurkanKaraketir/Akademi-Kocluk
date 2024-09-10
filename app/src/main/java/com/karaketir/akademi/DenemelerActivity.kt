@@ -51,12 +51,25 @@ class DenemelerActivity : AppCompatActivity() {
     private var denemeList = ArrayList<Deneme>()
     private lateinit var baslangicTarihi: Date
     private lateinit var bitisTarihi: Date
+    private var kurumKodu = 763455
     private var secilenZamanAraligi = ""
     private lateinit var studentID: String
-    private val zamanAraliklari =
-        arrayOf("Bugün", "Dün", "Bu Hafta", "Geçen Hafta", "Bu Ay", "Geçen Ay", "Tüm Zamanlar")
+    private val zamanAraliklari = arrayOf(
+        "Tüm Zamanlar",
+        "Bu Ay",
+        "Son 30 Gün",
+        "Geçen Ay",
+        "Son 2 Ay",
+        "Son 3 Ay",
+        "Son 4 Ay",
+        "Son 5 Ay",
+        "Son 6 Ay"
+    )
     private val turler = arrayOf("Tüm Denemeler", "TYT", "AYT")
     private lateinit var layoutManager: GridLayoutManager
+    private var grade = 0
+    private var teacher = ""
+    private var personType = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDenemelerBinding.inflate(layoutInflater)
@@ -69,15 +82,18 @@ class DenemelerActivity : AppCompatActivity() {
         val turSpinner = binding.denemeTurSpinner
         val denemeAddButton = binding.denemeAddButton
 
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
+        grade = intent.getStringExtra("grade").toString().toInt()
+        teacher = intent.getStringExtra("teacher").toString()
+        personType = intent.getStringExtra("personType").toString()
         layoutManager = GridLayoutManager(applicationContext, 2)
 
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            if (it.get("personType").toString() == "Student") {
-                denemeAddButton.visibility = View.VISIBLE
-            } else {
-                denemeAddButton.visibility = View.GONE
-            }
+        if (personType == "Student") {
+            denemeAddButton.visibility = View.VISIBLE
+        } else {
+            denemeAddButton.visibility = View.GONE
         }
+
 
         val denemeAdapter = ArrayAdapter(
             this@DenemelerActivity, android.R.layout.simple_spinner_item, zamanAraliklari
@@ -97,7 +113,8 @@ class DenemelerActivity : AppCompatActivity() {
 
                 recyclerView = binding.denemelerRecyclerView
                 recyclerView.layoutManager = layoutManager
-                recyclerAdapter = DenemelerRecyclerAdapter(denemeList, secilenZamanAraligi)
+                recyclerAdapter =
+                    DenemelerRecyclerAdapter(denemeList, secilenZamanAraligi, kurumKodu)
                 recyclerView.adapter = recyclerAdapter
                 recyclerAdapter.notifyDataSetChanged()
 
@@ -108,8 +125,8 @@ class DenemelerActivity : AppCompatActivity() {
                 cal.clear(Calendar.SECOND)
                 cal.clear(Calendar.MILLISECOND)
 
-                when (position) {
-                    0 -> {
+                when (secilenZamanAraligi) {
+                    "Bugün" -> {
                         baslangicTarihi = cal.time
 
 
@@ -117,14 +134,15 @@ class DenemelerActivity : AppCompatActivity() {
                         bitisTarihi = cal.time
                     }
 
-                    1 -> {
+                    "Dün" -> {
                         bitisTarihi = cal.time
 
                         cal.add(Calendar.DAY_OF_YEAR, -1)
                         baslangicTarihi = cal.time
+
                     }
 
-                    2 -> {
+                    "Bu Hafta" -> {
                         cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                         baslangicTarihi = cal.time
 
@@ -134,7 +152,7 @@ class DenemelerActivity : AppCompatActivity() {
 
                     }
 
-                    3 -> {
+                    "Geçen Hafta" -> {
                         cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                         bitisTarihi = cal.time
 
@@ -145,7 +163,7 @@ class DenemelerActivity : AppCompatActivity() {
 
                     }
 
-                    4 -> {
+                    "Bu Ay" -> {
 
                         cal = Calendar.getInstance()
                         cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -164,7 +182,7 @@ class DenemelerActivity : AppCompatActivity() {
 
                     }
 
-                    5 -> {
+                    "Geçen Ay" -> {
                         cal = Calendar.getInstance()
                         cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
 
@@ -180,8 +198,89 @@ class DenemelerActivity : AppCompatActivity() {
                         baslangicTarihi = cal.time
 
                     }
+                    "Son 30 Gün" -> {
+                        cal = Calendar.getInstance()
 
-                    6 -> {
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.DAY_OF_YEAR, -30)
+
+                        baslangicTarihi = cal.time
+
+                    }
+
+                    "Son 2 Ay" -> {
+                        cal = Calendar.getInstance()
+                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                        cal.clear(Calendar.MINUTE)
+                        cal.clear(Calendar.SECOND)
+                        cal.clear(Calendar.MILLISECOND)
+
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.MONTH, -2)
+                        baslangicTarihi = cal.time
+                    }
+
+                    "Son 3 Ay" -> {
+                        cal = Calendar.getInstance()
+                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                        cal.clear(Calendar.MINUTE)
+                        cal.clear(Calendar.SECOND)
+                        cal.clear(Calendar.MILLISECOND)
+
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.MONTH, -3)
+                        baslangicTarihi = cal.time
+                    }
+
+                    "Son 4 Ay" -> {
+                        cal = Calendar.getInstance()
+                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                        cal.clear(Calendar.MINUTE)
+                        cal.clear(Calendar.SECOND)
+                        cal.clear(Calendar.MILLISECOND)
+
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.MONTH, -4)
+                        baslangicTarihi = cal.time
+                    }
+
+                    "Son 5 Ay" -> {
+                        cal = Calendar.getInstance()
+                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                        cal.clear(Calendar.MINUTE)
+                        cal.clear(Calendar.SECOND)
+                        cal.clear(Calendar.MILLISECOND)
+
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.MONTH, -5)
+                        baslangicTarihi = cal.time
+                    }
+
+                    "Son 6 Ay" -> {
+                        cal = Calendar.getInstance()
+                        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                        cal.clear(Calendar.MINUTE)
+                        cal.clear(Calendar.SECOND)
+                        cal.clear(Calendar.MILLISECOND)
+
+                        bitisTarihi = cal.time
+
+                        cal.add(Calendar.MONTH, -6)
+                        baslangicTarihi = cal.time
+                    }
+
+
+                    "Tüm Zamanlar" -> {
                         cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
                         baslangicTarihi = cal.time
 
@@ -197,8 +296,6 @@ class DenemelerActivity : AppCompatActivity() {
                 turSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
                     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                        val kurumKodu = 763455
-
 
                         val secilenTur = turler[p2]
                         if (secilenTur != "Tüm Denemeler") {
@@ -319,7 +416,7 @@ class DenemelerActivity : AppCompatActivity() {
                 }
 
 
-                val kurumKodu = 763455
+
 
                 db.collection("School").document(kurumKodu.toString()).collection("Student")
                     .document(studentID).collection("Denemeler")
@@ -380,37 +477,38 @@ class DenemelerActivity : AppCompatActivity() {
         }
         denemeAddButton.setOnClickListener {
 
-            val kurumKodu = 763455
 
-            db.collection("School").document(kurumKodu.toString()).collection("Student")
-                .document(studentID).get().addOnSuccessListener { student ->
-                    val teacherID = student.get("teacher").toString()
-                    if (teacherID.isNotEmpty()) {
-                        val popup = PopupMenu(applicationContext, it)
-                        //inflate menu with layout mainmenu
-                        popup.inflate(R.menu.subject_context)
-                        popup.show()
+            if (teacher.isNotEmpty()) {
+                val popup = PopupMenu(applicationContext, it)
+                //inflate menu with layout mainmenu
+                popup.inflate(R.menu.subject_context)
+                popup.show()
 
-                        popup.setOnMenuItemClickListener { item ->
-                            if (item.itemId == R.id.TYT) {
-                                val intent = Intent(this, EnterTytActivity::class.java)
-                                intent.putExtra("studyType", "TYT")
-                                this.startActivity(intent)
-                            }
-
-                            if (item.itemId == R.id.AYT) {
-                                val intent = Intent(this, EnterTytActivity::class.java)
-                                intent.putExtra("studyType", "AYT")
-                                this.startActivity(intent)
-                            }
-                            false
-                        }
-                    } else {
-                        Toast.makeText(
-                            this, "Koç Öğretmeniniz Bulunmamaktadır.", Toast.LENGTH_SHORT
-                        ).show()
+                popup.setOnMenuItemClickListener { item ->
+                    if (item.itemId == R.id.TYT) {
+                        val intent = Intent(this, EnterTytActivity::class.java)
+                        intent.putExtra("studyType", "TYT")
+                        intent.putExtra("grade", grade.toString())
+                        intent.putExtra("teacher", teacher)
+                        intent.putExtra("kurumKodu", kurumKodu.toString())
+                        this.startActivity(intent)
                     }
+
+                    if (item.itemId == R.id.AYT) {
+                        val intent = Intent(this, EnterTytActivity::class.java)
+                        intent.putExtra("studyType", "AYT")
+                        intent.putExtra("grade", grade.toString())
+                        intent.putExtra("teacher", teacher)
+                        intent.putExtra("kurumKodu", kurumKodu.toString())
+                        this.startActivity(intent)
+                    }
+                    false
                 }
+            } else {
+                Toast.makeText(
+                    this, "Koç Öğretmeniniz Bulunmamaktadır.", Toast.LENGTH_SHORT
+                ).show()
+            }
 
 
         }

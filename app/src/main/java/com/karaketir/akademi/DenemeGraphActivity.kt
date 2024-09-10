@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.anychart.AnyChart
+import com.anychart.AnyChart.pie
 import com.anychart.chart.common.dataentry.DataEntry
 import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.anychart.chart.common.listener.Event
@@ -51,6 +52,7 @@ class DenemeGraphActivity : AppCompatActivity() {
     private var denemeOwnerID = ""
     private var dersAdi = ""
     private var denemeTur = ""
+    private var kurumKodu = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -65,6 +67,7 @@ class DenemeGraphActivity : AppCompatActivity() {
         zamanAraligi = intent.getStringExtra("zamanAraligi").toString()
         denemeOwnerID = intent.getStringExtra("denemeOwnerID").toString()
         dersAdi = intent.getStringExtra("dersAdi").toString()
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
 
         var cal = Calendar.getInstance()
@@ -107,6 +110,17 @@ class DenemeGraphActivity : AppCompatActivity() {
                 baslangicTarihi = cal.time
             }
 
+            "Son 30 Gün" -> {
+                cal = Calendar.getInstance()
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.DAY_OF_YEAR, -30)
+
+                baslangicTarihi = cal.time
+
+            }
+
             "Bu Ay" -> {
                 cal = Calendar.getInstance()
                 cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -140,6 +154,77 @@ class DenemeGraphActivity : AppCompatActivity() {
 
             }
 
+            "Son 2 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -2)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 3 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -3)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 4 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -4)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 5 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -5)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 6 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -6)
+                baslangicTarihi = cal.time
+            }
+
+
             "Tüm Zamanlar" -> {
                 cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
                 baslangicTarihi = cal.time
@@ -150,7 +235,6 @@ class DenemeGraphActivity : AppCompatActivity() {
             }
         }
 
-        val kurumKodu = 763455
         val denemeList = ArrayList<String>()
 
         val konuHashMap = hashMapOf<String, Int>()
@@ -159,12 +243,10 @@ class DenemeGraphActivity : AppCompatActivity() {
 
 
         db.collection("School").document(kurumKodu.toString()).collection("Student")
-            .document(denemeOwnerID).collection("Denemeler")
-            .whereEqualTo("denemeTür", denemeTur)
+            .document(denemeOwnerID).collection("Denemeler").whereEqualTo("denemeTür", denemeTur)
             .whereGreaterThan("denemeTarihi", baslangicTarihi)
             .whereLessThan("denemeTarihi", bitisTarihi)
-            .orderBy("denemeTarihi", Query.Direction.DESCENDING)
-            .addSnapshotListener { value, _ ->
+            .orderBy("denemeTarihi", Query.Direction.DESCENDING).addSnapshotListener { value, _ ->
                 denemeList.clear()
                 if (value != null) {
                     for (deneme in value) {
@@ -173,16 +255,13 @@ class DenemeGraphActivity : AppCompatActivity() {
 
 
                     for (id in denemeList) {
-                        db.collection("School").document(kurumKodu.toString())
-                            .collection("Student").document(denemeOwnerID)
-                            .collection("Denemeler").document(id).collection(dersAdi)
-                            .addSnapshotListener { konular, _ ->
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(denemeOwnerID).collection("Denemeler").document(id)
+                            .collection(dersAdi).addSnapshotListener { konular, _ ->
                                 if (konular != null) {
                                     for (konu in konular) {
 
-                                        if (konu.get("konuAdi")
-                                                .toString() in konuHashMap.keys
-                                        ) {
+                                        if (konu.get("konuAdi").toString() in konuHashMap.keys) {
 
                                             val currentValue =
                                                 konuHashMap[konu.get("konuAdi").toString()]
@@ -262,6 +341,7 @@ class DenemeGraphActivity : AppCompatActivity() {
                 intentOne.putExtra("denemeTür", denemeTur)
                 intentOne.putExtra("denemeOwnerID", denemeOwnerID)
                 intentOne.putExtra("zamanAraligi", zamanAraligi)
+                intentOne.putExtra("kurumKodu", kurumKodu.toString())
                 intentOne.putExtra("konuAdi", event.data["x"])
                 intentOne.putExtra("value", event.data["value"])
                 this@DenemeGraphActivity.startActivity(intentOne)

@@ -35,6 +35,7 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
     private var dersAdi = ""
     private var value = ""
     private var denemeTur = ""
+    private var kurumKodu = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +51,7 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
         dersAdi = intent.getStringExtra("dersAdi").toString()
         value = intent.getStringExtra("value").toString()
         konuAdi = intent.getStringExtra("konuAdi").toString()
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
 
         var cal = Calendar.getInstance()
@@ -107,6 +109,17 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
                 bitisTarihi = cal.time
             }
 
+            "Son 30 Gün" -> {
+                cal = Calendar.getInstance()
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.DAY_OF_YEAR, -30)
+
+                baslangicTarihi = cal.time
+
+            }
+
             "Geçen Ay" -> {
                 cal = Calendar.getInstance()
                 cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -124,6 +137,77 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
 
             }
 
+            "Son 2 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -2)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 3 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -3)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 4 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -4)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 5 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -5)
+                baslangicTarihi = cal.time
+            }
+
+            "Son 6 Ay" -> {
+                cal = Calendar.getInstance()
+                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+                cal.clear(Calendar.MINUTE)
+                cal.clear(Calendar.SECOND)
+                cal.clear(Calendar.MILLISECOND)
+
+                bitisTarihi = cal.time
+
+                cal.add(Calendar.MONTH, -6)
+                baslangicTarihi = cal.time
+            }
+
+
             "Tüm Zamanlar" -> {
                 cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
                 baslangicTarihi = cal.time
@@ -134,7 +218,6 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
             }
         }
 
-        val kurumKodu = 763455
         val denemeList = ArrayList<String>()
 
         val konuHashMap = hashMapOf<String, Int>()
@@ -142,12 +225,10 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
 
 
         db.collection("School").document(kurumKodu.toString()).collection("Student")
-            .document(denemeOwnerID).collection("Denemeler")
-            .whereEqualTo("denemeTür", denemeTur)
+            .document(denemeOwnerID).collection("Denemeler").whereEqualTo("denemeTür", denemeTur)
             .whereGreaterThan("denemeTarihi", baslangicTarihi)
             .whereLessThan("denemeTarihi", bitisTarihi)
-            .orderBy("denemeTarihi", Query.Direction.DESCENDING)
-            .addSnapshotListener { value, _ ->
+            .orderBy("denemeTarihi", Query.Direction.DESCENDING).addSnapshotListener { value, _ ->
                 denemeList.clear()
                 if (value != null) {
                     for (deneme in value) {
@@ -156,17 +237,14 @@ class DenemeAltKonuYanlisGraphActivity : AppCompatActivity() {
 
 
                     for (id in denemeList) {
-                        db.collection("School").document(kurumKodu.toString())
-                            .collection("Student").document(denemeOwnerID)
-                            .collection("Denemeler").document(id).collection(dersAdi)
-                            .document(konuAdi).collection("AltKonu")
+                        db.collection("School").document(kurumKodu.toString()).collection("Student")
+                            .document(denemeOwnerID).collection("Denemeler").document(id)
+                            .collection(dersAdi).document(konuAdi).collection("AltKonu")
                             .addSnapshotListener { konular, _ ->
                                 if (konular != null) {
                                     for (konu in konular) {
 
-                                        if (konu.get("konuAdi")
-                                                .toString() in konuHashMap.keys
-                                        ) {
+                                        if (konu.get("konuAdi").toString() in konuHashMap.keys) {
 
                                             val currentValue =
                                                 konuHashMap[konu.get("konuAdi").toString()]

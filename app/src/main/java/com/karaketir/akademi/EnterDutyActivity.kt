@@ -44,6 +44,7 @@ class EnterDutyActivity : AppCompatActivity() {
     private var dersAdlari = ArrayList<String>()
     private var konuAdlari = ArrayList<String>()
     private var secilenDers = ""
+    private var kurumKodu = 0
     private var secilenTur = ""
     private var secilenKonu = ""
     private var turler = arrayOf("TYT", "AYT")
@@ -58,6 +59,7 @@ class EnterDutyActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
         db.collection("Lessons").orderBy("dersAdi", Query.Direction.ASCENDING)
             .addSnapshotListener { dersAdlariDocument, _ ->
@@ -225,7 +227,6 @@ class EnterDutyActivity : AppCompatActivity() {
 
                     )
 
-                    val kurumKodu = 763455
                     var sended = false
 
                     db.collection("School").document(kurumKodu.toString()).collection("Student")

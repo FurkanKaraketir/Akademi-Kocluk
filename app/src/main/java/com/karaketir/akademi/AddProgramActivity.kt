@@ -2,12 +2,12 @@ package com.karaketir.akademi
 
 //noinspection SuspiciousImport
 import android.R
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,7 +21,7 @@ class AddProgramActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
-    private var turler = arrayListOf("TYT", "AYT", "TYT ve AYT")
+    private var turler = arrayListOf("TYT", "AYT")
     private var gun = "Pazartesi"
     private var sayi = 0
     private var dersAdlari = ArrayList<String>()
@@ -29,12 +29,18 @@ class AddProgramActivity : AppCompatActivity() {
     private var secilenDers = "Matematik"
     private var secilenTur = "TYT"
     private var dakika = 0
-    private var soru = 0
     private var values = arrayOf(
         "0",
+        "10",
+        "15",
+        "20",
+        "25",
         "30",
+        "35",
         "40",
+        "45",
         "50",
+        "55",
         "60",
         "70",
         "80",
@@ -49,13 +55,14 @@ class AddProgramActivity : AppCompatActivity() {
         "170",
         "180"
     )
+
     private var gunler =
         arrayListOf("Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar")
 
     private var valuesID = arrayOf(
-        "1", "2", "3", "4"
+        "1", "2", "3", "4", "5", "6", "7", "8", "9"
     )
-    private val kurumKodu = 763455
+    private var kurumKodu = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,6 +74,7 @@ class AddProgramActivity : AppCompatActivity() {
         db = Firebase.firestore
 
         val studentID = intent.getStringExtra("studentID").toString()
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
         val gunSpinner = binding.gunSpinner
 
         val saveButton = binding.dutySaveButton
@@ -155,11 +163,9 @@ class AddProgramActivity : AppCompatActivity() {
 
             val data = hashMapOf(
                 "id" to (sayi).toString(),
-                "dersGun" to gun,
                 "dersAdi" to secilenDers,
                 "dersTuru" to secilenTur,
-                "dersSure" to dakika,
-                "dersSoru" to soru
+                "dersSure" to dakika
             )
 
             db.collection("School").document(kurumKodu.toString()).collection("Student")
@@ -189,15 +195,6 @@ class AddProgramActivity : AppCompatActivity() {
         sayiPicker.wrapSelectorWheel = true
         sayiPicker.setOnValueChangedListener { _, _, newVal ->
             sayi = valuesID[newVal].toInt() - 1
-        }
-
-        val soruPicker = binding.numberPickerSoru
-        soruPicker.minValue = 0
-        soruPicker.maxValue = values.size - 1
-        soruPicker.displayedValues = values
-        soruPicker.wrapSelectorWheel = true
-        soruPicker.setOnValueChangedListener { _, _, newVal ->
-            soru = values[newVal].toInt()
         }
     }
 }

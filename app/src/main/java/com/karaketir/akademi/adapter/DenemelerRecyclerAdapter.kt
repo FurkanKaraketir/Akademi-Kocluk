@@ -20,12 +20,13 @@ import com.karaketir.akademi.models.Deneme
 import java.text.SimpleDateFormat
 
 class DenemelerRecyclerAdapter(
-    private val denemeList: List<Deneme>, private val secilenZamanAraligi: String
+    private val denemeList: List<Deneme>,
+    private val secilenZamanAraligi: String,
+    private val kurumKodu: Int
 ) : RecyclerView.Adapter<DenemelerRecyclerAdapter.DenemeHolder>() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    val kurumKodu = 763455
 
     class DenemeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = DenemeGridRowBinding.bind(itemView)
@@ -60,13 +61,13 @@ class DenemelerRecyclerAdapter(
                     val intent =
                         Intent(holder.itemView.context, OneDenemeViewerActivity::class.java)
                     intent.putExtra("denemeID", myItem.denemeID)
+                    intent.putExtra("kurumKodu", kurumKodu.toString())
                     intent.putExtra("secilenZamanAraligi", secilenZamanAraligi)
                     intent.putExtra("denemeStudentID", myItem.denemeStudentID)
                     intent.putExtra("denemeTür", myItem.denemeTur)
                     holder.itemView.context.startActivity(intent)
                 }
                 binding.denemeDeleteStudentButton.setOnClickListener {
-
 
                     val deleteAlertDialog = AlertDialog.Builder(holder.itemView.context)
                     deleteAlertDialog.setTitle("Deneme Sil")

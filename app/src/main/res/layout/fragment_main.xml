@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".fragments.MainFragment">
+
+        <RelativeLayout
+            android:id="@+id/relative"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/welcomeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/transitions_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/helloText"
+                        style="@style/MaterialAlertDialog.Material3.Title.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginBottom="25dp"
+                        android:gravity="center"
+                        android:text="@string/merhaba"
+                        android:textSize="20sp"
+                        app:icon="@drawable/baseline_account_circle_24" />
+
+                    <TextView
+                        android:id="@+id/nameAndSurnameTextView"
+                        style="@style/MaterialAlertDialog.Material3.Title.Text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginBottom="25dp"
+                        android:layout_toEndOf="@id/helloText"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:icon="@drawable/baseline_account_circle_24" />
+
+                    <Button
+                        android:id="@+id/signOutButton"
+                        style="@style/Widget.Material3.Button.IconButton.Outlined"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/add_something"
+                        android:src="@drawable/ic_baseline_highlight_off_24"
+                        app:icon="@drawable/ic_baseline_highlight_off_24"
+                        tools:ignore="RelativeOverlap" />
+
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/teacherCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="15dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="4dp">
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <Button
+                                android:id="@+id/teacherButtonImage"
+                                style="@style/Widget.Material3.Button.IconButton"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:icon="@drawable/baseline_man_24" />
+
+                            <TextView
+                                android:id="@+id/studentCountTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="10dp"
+                                android:layout_toEndOf="@+id/teacherButtonImage"
+                                android:gravity="center"
+                                android:text="@string/renci_say_s" />
+
+                            <ProgressBar
+                                android:id="@+id/progressBar"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="10dp"
+                                android:layout_toEndOf="@id/studentCountTextView" />
+                        </RelativeLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/YKSsayacCardView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="15dp"
+                        android:visibility="gone"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="4dp">
+
+                        <TextView
+                            android:id="@+id/YKSsayac"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="14dp"
+                            android:gravity="center"
+                            android:shadowRadius="10" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:id="@+id/kocOgretmenTextView"
+                        style="@style/bodyMenuText"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="15dp"
+                        android:shadowRadius="10"
+                        android:text="@string/ko_retmenin"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/sayacContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/noReportButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/rapor_g_ndermeyenler"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_baseline_error_outline_24">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/previousRatingsButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/de_erlendirmeler"
+                            android:visibility="gone"
+                            app:icon="@drawable/baseline_stars_24" />
+
+                        <Button
+                            android:id="@+id/hedefStudentButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:text="@string/haftal_k_hedefler"
+                            android:textSize="15sp"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_baseline_outlined_flag_24" />
+
+                        <Button
+                            android:id="@+id/allStudentsBtn"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/t_m_renciler"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_baseline_people_outline_24">
+
+                        </Button>
+
+
+                        <Button
+                            android:id="@+id/excelButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/excel_tablosu_olu_tur"
+                            android:visibility="gone"
+                            app:icon="@drawable/baseline_upload_file_24">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/topStudentsButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/renci_s_ralamas"
+                            android:visibility="gone"
+                            app:icon="@drawable/baseline_supervisor_account_24">
+
+                        </Button>
+
+                        <Button
+                            android:id="@+id/dersProgramiButton"
+                            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="@string/ders_program"
+                            android:visibility="gone"
+                            app:icon="@drawable/baseline_table_chart_24" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/welcomeText"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/search_bar_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <Spinner
+                        android:id="@+id/studyZamanAraligiSpinner"
+                        style="@style/bodyMenuText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:shadowRadius="10"
+                        android:spinnerMode="dialog"
+                        android:tooltipText="Alan Seçimi Yapınız"
+                        tools:ignore="UnusedAttribute" />
+
+
+                    <Spinner
+                        android:id="@+id/gradeSpinner"
+                        style="@style/bodyMenuText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:shadowRadius="10"
+                        android:spinnerMode="dialog"
+                        android:tooltipText="Alan Seçimi Yapınız"
+                        tools:ignore="UnusedAttribute" />
+
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/customDateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/baslangicTarihiTextView"
+                        style="@style/TextAppearance.AppCompat.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:id="@+id/bitisTarihiTextView"
+                        style="@style/TextAppearance.AppCompat.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="15dp"
+                        android:textSize="12sp"
+                        tools:ignore="RelativeOverlap" />
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/searchStudentMainActivityEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:autofillHints="StudentName"
+                    android:drawableStart="@drawable/search"
+                    android:hint="@string/renci_ara"
+                    android:inputType="text"
+                    android:maxLength="40"
+                    android:visibility="gone">
+
+                </EditText>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="15dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="4dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/myStudents"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone">
+
+
+                    </androidx.recyclerview.widget.RecyclerView>
+
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/previousStudies"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:visibility="gone">
+
+
+                </androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/updateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:cardElevation="4dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/updateText"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/uygulamay_g_ncellemeniz_gerekmektedir" />
+
+                <Button
+                    android:id="@+id/updateButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/updateText"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="15dp"
+                    android:text="@string/g_ncellemek_in_t_klay_n" />
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+        <Button
+            android:id="@+id/sendMessageButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:text="@string/mesaj_g_nder"
+            android:visibility="gone"
+            app:icon="@drawable/baseline_message_24">
+
+        </Button>
+
+        <Button
+            android:id="@+id/addStudyButton"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:contentDescription="@string/add_something"
+            android:text="@string/al_ma_ekle"
+            android:visibility="gone"
+            app:icon="@drawable/ic_baseline_add_circle_outline_24"
+            tools:ignore="RelativeOverlap" />
+
+    </RelativeLayout>
+</layout>

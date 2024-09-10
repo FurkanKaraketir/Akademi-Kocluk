@@ -40,6 +40,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         auth = Firebase.auth
 
+
         val loginButton = binding.LoginButton
         val emailEditText = binding.emailLoginEditText
         val passwordEditText = binding.passwordLoginEditText
@@ -54,12 +55,10 @@ class LoginActivity : AppCompatActivity() {
         signUpButton.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             this.startActivity(intent)
-            finish()
         }
         iWanSignUpText.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             this.startActivity(intent)
-            finish()
         }
 
         loginButton.setOnClickListener {
@@ -81,6 +80,7 @@ class LoginActivity : AppCompatActivity() {
 
 
     }
+
 
     private fun showDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)

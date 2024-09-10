@@ -15,12 +15,13 @@ import com.karaketir.akademi.TestResultsShortActivity
 import com.karaketir.akademi.databinding.DenemelerTeacherRowBinding
 import com.karaketir.akademi.models.DenemeTeacher
 
-class DenemelerTeacherRecyclerAdapter(private var denemeList: ArrayList<DenemeTeacher>) :
-    RecyclerView.Adapter<DenemelerTeacherRecyclerAdapter.DenemeHolder>() {
+class DenemelerTeacherRecyclerAdapter(
+    private var denemeList: ArrayList<DenemeTeacher>, private var kurumKodu: Int
+) : RecyclerView.Adapter<DenemelerTeacherRecyclerAdapter.DenemeHolder>() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private val kurumKodu = 763455
+
 
     class DenemeHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = DenemelerTeacherRowBinding.bind(itemView)
@@ -72,6 +73,7 @@ class DenemelerTeacherRecyclerAdapter(private var denemeList: ArrayList<DenemeTe
                     val intent =
                         Intent(holder.itemView.context, TestResultsShortActivity::class.java)
                     intent.putExtra("denemeAdi", myItem.denemeAdi)
+                    intent.putExtra("kurumKodu", kurumKodu.toString())
                     holder.itemView.context.startActivity(intent)
                 }
 
@@ -79,6 +81,7 @@ class DenemelerTeacherRecyclerAdapter(private var denemeList: ArrayList<DenemeTe
                     val intent =
                         Intent(holder.itemView.context, DenemeTeacherEditActivity::class.java)
                     intent.putExtra("denemeID", myItem.denemeID)
+                    intent.putExtra("kurumKodu", kurumKodu.toString())
                     intent.putExtra("denemeAdi", myItem.denemeAdi)
                     holder.itemView.context.startActivity(intent)
                 }

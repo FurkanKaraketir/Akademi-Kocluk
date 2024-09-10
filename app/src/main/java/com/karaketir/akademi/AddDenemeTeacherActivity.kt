@@ -38,6 +38,7 @@ class AddDenemeTeacherActivity : AppCompatActivity(), AdapterView.OnItemSelected
 
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
+    private var kurumKodu = 0
 
     private var turler = arrayOf("TYT", "AYT")
     private var secilenTur = ""
@@ -60,6 +61,7 @@ class AddDenemeTeacherActivity : AppCompatActivity(), AdapterView.OnItemSelected
         val denemeTuruSpinner = binding.denemeTurSpinner
         val denemeSave = binding.saveDeneme
         val tarihSecButton = binding.denemeTarihSecButton
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
         tarihSecButton.setOnClickListener {
 
@@ -98,7 +100,7 @@ class AddDenemeTeacherActivity : AppCompatActivity(), AdapterView.OnItemSelected
                         "tür" to secilenTur
                     )
 
-                    val kurumKodu = 763455
+
 
                     db.collection("School").document(kurumKodu.toString()).collection("Teacher")
                         .document(auth.uid.toString()).collection("Denemeler").document(documentID)

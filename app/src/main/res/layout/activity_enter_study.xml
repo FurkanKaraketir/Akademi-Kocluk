@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".EnterStudyActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/subjectTypeTitle"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
@@ -29,6 +29,8 @@
             android:id="@+id/studySpinnerLayout"
             android:layout_width="320dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/subjectTypeTitle"
+            android:layout_centerHorizontal="true"
             android:layout_margin="20dp"
             android:gravity="center"
             android:orientation="horizontal">
@@ -50,120 +52,88 @@
                 tools:ignore="UnusedAttribute" />
         </LinearLayout>
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/studyDateButton"
+            android:layout_width="320dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            app:cardCornerRadius="10dp">
+            android:layout_below="@id/studySpinnerLayout"
+            android:layout_centerHorizontal="true"
+            android:text="@string/al_ma_tarihi"
+            android:textSize="18sp"
+            app:icon="@drawable/ic_baseline_timer_24" />
 
-            <LinearLayout
-                android:id="@+id/containerLayout1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <TextView
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="@string/ka_dakika_konu_al_t_n">
-
-                </TextView>
-
-                <NumberPicker
-                    android:id="@+id/numberPickerKonuDk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
-
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputCurrentMinutes"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/studyDateButton"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp">
+            android:layout_margin="20dp"
+            android:hint="@string/ka_dakika_konu_al_t_n"
+            android:maxLength="3">
 
-            <LinearLayout
-                android:id="@+id/containerLayout2"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/currentMinutesEditText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:inputType="number"
+                android:maxLength="3" />
 
-                <TextView
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="@string/ka_dakika_testi_zd_n">
+        </com.google.android.material.textfield.TextInputLayout>
 
-                </TextView>
-
-                <NumberPicker
-                    android:id="@+id/numberPickerSoruDk"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputCurrentTestsMinutes"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="320dp"
             android:layout_height="wrap_content"
+            android:layout_below="@id/TextInputCurrentMinutes"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            app:cardCornerRadius="10dp">
+            android:layout_margin="20dp"
+            android:hint="@string/ka_dakika_testi_zd_n"
+            android:maxLength="3">
 
-            <LinearLayout
-                android:id="@+id/containerLayout3"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/currentTestsMinutesEditText"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:inputType="number"
+                android:maxLength="3" />
 
-                <TextView
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="center"
-                    android:text="@string/ka_tane_soru_zd_n">
+        </com.google.android.material.textfield.TextInputLayout>
 
-                </TextView>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputCurrentTests"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/TextInputCurrentTestsMinutes"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="20dp"
+            android:hint="@string/ka_tane_soru_zd_n"
+            android:maxLength="3">
 
-                <NumberPicker
-                    android:id="@+id/numberPickerSoruSayi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/currentTestsEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="3" />
 
-            </LinearLayout>
-
-
-        </androidx.cardview.widget.CardView>
-
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/studySaveButton"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="320dp"
             android:layout_height="60dp"
+            android:layout_below="@id/TextInputCurrentTests"
+            android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
@@ -173,7 +143,9 @@
             android:textSize="18sp">
 
         </Button>
-    </LinearLayout>
+
+
+    </RelativeLayout>
 
 
 </ScrollView>

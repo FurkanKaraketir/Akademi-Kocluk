@@ -33,68 +33,8 @@
             android:layout_margin="10dp"
             android:visibility="gone" />
 
-
     </LinearLayout>
 
-
-    <LinearLayout
-        android:id="@+id/studySpinnerLayout"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/s_ralama_kriteri"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/studySpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:spinnerMode="dialog"
-            android:tooltipText="Konu Seçimi Yapınız"
-            tools:ignore="UnusedAttribute" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/timeSpinnerLayout"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/zaman_aral"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/timeSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:spinnerMode="dialog"
-            android:tooltipText="Konu Seçimi Yapınız"
-            tools:ignore="UnusedAttribute" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/getResults"
-        style="@style/Widget.Material3.Button.ElevatedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
-        android:text="@string/sonu_lar_getir" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/studentPlacementRecyclerView"

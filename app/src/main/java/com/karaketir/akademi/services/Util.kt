@@ -11,15 +11,12 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
-import android.widget.ImageView
+import android.webkit.CookieManager
+import android.webkit.WebStorage
 import android.widget.TextView
 import android.widget.Toast
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.karaketir.akademi.R
 import org.apache.poi.ss.usermodel.CellStyle
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
@@ -29,6 +26,7 @@ import org.apache.poi.ss.util.CellUtil
 import org.apache.poi.xssf.usermodel.IndexedColorMap
 import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import retrofit2.http.GET
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -36,13 +34,23 @@ import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-private const val CODE = 763455
 
-fun ImageView.glide(url: String?, placeholder: CircularProgressDrawable) {
-    val options = RequestOptions().placeholder(placeholder).error(R.drawable.blank)
+fun clearCache(context: Context) {
+    // Clear WebView cache
+    android.webkit.WebView(context).clearCache(true)
 
-    Glide.with(context.applicationContext).setDefaultRequestOptions(options).load(url).into(this)
+    // Clear HTML5 Web Storage (localStorage, sessionStorage)
+    WebStorage.getInstance().deleteAllData()
+
+    // Clear Cookies
+    val cookieManager = CookieManager.getInstance()
+    cookieManager.removeAllCookies(null)
+
+    // Clear application cache
+    context.deleteDatabase("webview.db")
+    context.deleteDatabase("webviewCache.db")
 }
+
 
 fun TextView.setTextAnimation(
     text: String, duration: Long = 300, completion: (() -> Unit)? = null
@@ -83,14 +91,6 @@ fun openLink(link: String, context: Context) {
         Intent.ACTION_VIEW, Uri.parse(link)
     )
     context.startActivity(browserIntent)
-}
-
-fun placeHolderYap(context: Context): CircularProgressDrawable {
-    return CircularProgressDrawable(context).apply {
-        strokeWidth = 10f
-        centerRadius = 40f
-        start()
-    }
 }
 
 fun createSheetHeader(cellStyle: CellStyle, sheet: Sheet) {
@@ -174,7 +174,7 @@ fun createExcel(
 ) {
 
     val time = Calendar.getInstance().time
-    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm")
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH-mm")
     val current = formatter.format(time)
 
     val contentUri = MediaStore.Files.getContentUri("external")
@@ -183,7 +183,7 @@ fun createExcel(
         val selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?"
 
         val selectionArgs =
-            arrayOf(Environment.DIRECTORY_DOCUMENTS + "/Koçluk İstatistikleri/") //must include "/" in front and end
+            arrayOf(Environment.DIRECTORY_DOCUMENTS + "/Koçluk Takip Sistemi/") //must include "/" in front and end
 
 
         val cursor: Cursor? =
@@ -195,7 +195,7 @@ fun createExcel(
             if (cursor.count == 0) {
                 Toast.makeText(
                     context.applicationContext,
-                    "Dosya Bulunamadı \"" + Environment.DIRECTORY_DOCUMENTS + "/Koçluk İstatistikleri/\"",
+                    "Dosya Bulunamadı \"" + Environment.DIRECTORY_DOCUMENTS + "/Koçluk Takip Sistemi/\"",
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -210,7 +210,7 @@ fun createExcel(
                     ) //file extension, will automatically add to file
                     values.put(
                         MediaStore.MediaColumns.RELATIVE_PATH,
-                        Environment.DIRECTORY_DOCUMENTS + "/Koçluk İstatistikleri/"
+                        Environment.DIRECTORY_DOCUMENTS + "/Koçluk Takip Sistemi/"
                     ) //end "/" is not mandatory
                     uri = context.contentResolver.insert(
                         MediaStore.Files.getContentUri("external"), values
@@ -260,7 +260,7 @@ fun createExcel(
                         ) //file extension, will automatically add to file
                         values.put(
                             MediaStore.MediaColumns.RELATIVE_PATH,
-                            Environment.DIRECTORY_DOCUMENTS + "/Koçluk İstatistikleri/"
+                            Environment.DIRECTORY_DOCUMENTS + "/Koçluk Takip Sistemi/"
                         ) //end "/" is not mandatory
                         uri = context.contentResolver.insert(
                             MediaStore.Files.getContentUri("external"), values
@@ -336,6 +336,7 @@ fun addData(
     sheet: Sheet,
     secilenZaman: String,
     secilenGrade: String,
+    currentKurumKodu: String,
     auth: FirebaseAuth,
     db: FirebaseFirestore,
     context: Context,
@@ -406,6 +407,17 @@ fun addData(
 
         }
 
+        "Son 30 Gün" -> {
+            cal = Calendar.getInstance()
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.DAY_OF_YEAR, -30)
+
+            baslangicTarihi = cal.time
+
+        }
+
         "Geçen Ay" -> {
             cal = Calendar.getInstance()
             cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
@@ -421,6 +433,76 @@ fun addData(
             cal.add(Calendar.MONTH, -1)
             baslangicTarihi = cal.time
 
+        }
+
+        "Son 2 Ay" -> {
+            cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.MONTH, -2)
+            baslangicTarihi = cal.time
+        }
+
+        "Son 3 Ay" -> {
+            cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.MONTH, -3)
+            baslangicTarihi = cal.time
+        }
+
+        "Son 4 Ay" -> {
+            cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.MONTH, -4)
+            baslangicTarihi = cal.time
+        }
+
+        "Son 5 Ay" -> {
+            cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.MONTH, -5)
+            baslangicTarihi = cal.time
+        }
+
+        "Son 6 Ay" -> {
+            cal = Calendar.getInstance()
+            cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
+
+            cal.clear(Calendar.MINUTE)
+            cal.clear(Calendar.SECOND)
+            cal.clear(Calendar.MILLISECOND)
+
+            bitisTarihi = cal.time
+
+            cal.add(Calendar.MONTH, -6)
+            baslangicTarihi = cal.time
         }
 
         "Tüm Zamanlar" -> {
@@ -479,7 +561,7 @@ fun addData(
     CellUtil.createCell(rowFake, 28, "Diğer Soru")
 
     if (secilenGrade != "Bütün Sınıflar") {
-        db.collection("School").document(CODE.toString()).collection("Student")
+        db.collection("School").document(currentKurumKodu).collection("Student")
             .whereEqualTo("teacher", auth.uid.toString())
             .whereEqualTo("grade", secilenGrade.toInt()).orderBy("nameAndSurname")
             .addSnapshotListener { students, _ ->
@@ -533,7 +615,7 @@ fun addData(
                         val row = sheet.createRow(index)
                         CellUtil.createCell(row, 0, i.get("nameAndSurname").toString())
 
-                        db.collection("School").document(CODE.toString()).collection("Student")
+                        db.collection("School").document(currentKurumKodu).collection("Student")
                             .document(i.id).collection("Studies")
                             .whereGreaterThan("timestamp", baslangicTarihi)
                             .whereLessThan("timestamp", bitisTarihi)
@@ -750,7 +832,7 @@ fun addData(
 
 
     } else {
-        db.collection("School").document(CODE.toString()).collection("Student")
+        db.collection("School").document(currentKurumKodu).collection("Student")
             .whereEqualTo("teacher", auth.uid.toString()).orderBy("nameAndSurname")
             .addSnapshotListener { students, _ ->
                 if (students != null) {
@@ -803,7 +885,7 @@ fun addData(
                         val row = sheet.createRow(index)
                         CellUtil.createCell(row, 0, i.get("nameAndSurname").toString())
 
-                        db.collection("School").document(CODE.toString()).collection("Student")
+                        db.collection("School").document(currentKurumKodu).collection("Student")
                             .document(i.id).collection("Studies")
                             .whereGreaterThan("timestamp", baslangicTarihi)
                             .whereLessThan("timestamp", bitisTarihi)
@@ -1025,5 +1107,28 @@ fun addData(
 
 }
 
-private fun Float.format(digits: Int) = "%.${digits}f".format(this)
+data class WorldTime(
+    val abbreviation: String,
+    val client_ip: String,
+    val datetime: String,
+    val day_of_week: Int,
+    val day_of_year: Int,
+    val dst: Boolean,
+    val dst_from: Any?,
+    val dst_offset: Int,
+    val dst_until: Any?,
+    val raw_offset: Int,
+    val timezone: String,
+    val unixtime: Long,
+    val utc_datetime: String,
+    val utc_offset: String,
+    val week_number: Int
+)
+
+interface WorldTimeApi {
+    @GET("/api/ip")
+    suspend fun getCurrentTime(): WorldTime
+}
+
+fun Float.format(digits: Int) = "%.${digits}f".format(this)
 

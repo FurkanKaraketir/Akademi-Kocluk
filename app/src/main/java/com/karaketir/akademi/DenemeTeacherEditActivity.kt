@@ -35,6 +35,7 @@ class DenemeTeacherEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDenemeTeacherEditBinding
     private lateinit var db: FirebaseFirestore
+    private var kurumKodu = 0
     private lateinit var auth: FirebaseAuth
 
     @SuppressLint("SimpleDateFormat", "SetTextI18n")
@@ -45,6 +46,7 @@ class DenemeTeacherEditActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         db = Firebase.firestore
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -57,14 +59,15 @@ class DenemeTeacherEditActivity : AppCompatActivity() {
         binding.denemeTitle.text = intent.getStringExtra("denemeAdi").toString()
 
 
-        val kurumKodu = 763455
+
 
         db.collection("School").document(kurumKodu.toString()).collection("Teacher")
             .document(auth.uid.toString()).collection("Denemeler").document(denemeID).get()
             .addOnSuccessListener {
                 val denemeTarihi = it.get("bitisTarihi") as Timestamp
 
-                val dateFormated = SimpleDateFormat("dd/MM/yyyy").format(denemeTarihi.toDate())
+                val dateFormated =
+                    SimpleDateFormat("dd/MM/yyyy").format(denemeTarihi.toDate())
 
                 binding.denemeEditPickDate.text = "Bitiş Tarihi: $dateFormated"
                 binding.denemeEditPickDate.setOnClickListener {
@@ -88,13 +91,13 @@ class DenemeTeacherEditActivity : AppCompatActivity() {
             val updateData = hashMapOf<String, Any>("bitisTarihi" to c.time)
 
 
-
             db.collection("School").document(kurumKodu.toString()).collection("Teacher")
                 .document(auth.uid.toString()).collection("Denemeler").document(denemeID)
                 .update(updateData).addOnSuccessListener {
                     Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
                     finish()
                 }
+
 
         }
 

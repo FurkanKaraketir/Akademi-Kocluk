@@ -38,6 +38,7 @@ class GoalEnterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
     private lateinit var db: FirebaseFirestore
     private var dersler = ArrayList<String>()
     private var secilenDers = ""
+    private var kurumKodu = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityGoalEnterBinding.inflate(layoutInflater)
@@ -51,6 +52,7 @@ class GoalEnterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
         val goalSave = binding.goalSave
         val studentID = intent.getStringExtra("studentID").toString()
         val dersAdiSpinner = binding.hedefDersSpinner
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
 
 
         db.collection("Lessons").orderBy("dersAdi", Query.Direction.ASCENDING)
@@ -84,7 +86,6 @@ class GoalEnterActivity : AppCompatActivity(), AdapterView.OnItemSelectedListene
                 if (cozulenSoru.text.toString().isNotEmpty()) {
                     cozulenSoru.error = null
 
-                    val kurumKodu = 763455
 
                     val data = hashMapOf(
                         "dersAdi" to secilenDers,

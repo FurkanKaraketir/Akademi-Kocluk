@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.karaketir.akademi
 
 import android.Manifest
@@ -15,6 +17,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -28,7 +31,12 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.karaketir.akademi.adapter.ClassesAdapter
 import com.karaketir.akademi.databinding.ActivityStudiesBinding
-import org.apache.poi.ss.usermodel.*
+import com.karaketir.akademi.services.FcmNotificationsSenderService
+import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.FillPatternType
+import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.util.CellUtil
 import org.apache.poi.xssf.usermodel.IndexedColorMap
 import org.apache.poi.xssf.usermodel.XSSFColor
@@ -38,7 +46,8 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
 class StudiesActivity : AppCompatActivity() {
@@ -71,9 +80,10 @@ class StudiesActivity : AppCompatActivity() {
     private lateinit var bitisTarihi: Date
     private lateinit var binding: ActivityStudiesBinding
     private var secilenZamanAraligi = ""
+
     private var studentID = ""
     var name = ""
-    private val kurumKodu = 763455
+    private var kurumKodu = 0
     private lateinit var layoutManager: GridLayoutManager
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
@@ -84,10 +94,32 @@ class StudiesActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
         recyclerViewStudies = binding.recyclerViewStudies
+
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
+
+
         layoutManager = GridLayoutManager(applicationContext, 2)
         val intent = intent
         studentID = intent.getStringExtra("studentID").toString()
         secilenZamanAraligi = intent.getStringExtra("secilenZaman").toString()
+        baslangicTarihi = intent.getSerializableExtra("baslangicTarihi") as Date
+        bitisTarihi = intent.getSerializableExtra("bitisTarihi") as Date
+        when (secilenZamanAraligi) {
+
+            "Bugün" -> {
+                binding.starScroll.visibility = View.VISIBLE
+            }
+
+            "Dün" -> {
+                binding.starScroll.visibility = View.VISIBLE
+
+            }
+
+            else -> {
+                binding.starScroll.visibility = View.GONE
+            }
+        }
+
 
         val sheet: Sheet = workbook.createSheet("Sayfa 1")
 
@@ -98,143 +130,48 @@ class StudiesActivity : AppCompatActivity() {
         createSheetHeader(cellStyle, sheet)
 
         val dersProgramiTeacherButton = binding.dersProgramiTeacherButton
+        val previousRatingsButton = binding.previousRatingsButton
         val gorevlerButton = binding.gorevTeacherButton
         val denemelerButton = binding.denemeTeacherButton
         val hedefTeacherButton = binding.hedefTeacherButton
         val toplamSureText = binding.toplamSureText
         val toplamSoruText = binding.toplamSoruText
         val nameTextView = binding.studentNameForTeacher
+        val fiveStarButton = binding.fiveStarButton
+        val fourStarButton = binding.fourStarButton
+        val treeStarButton = binding.threeStarButton
+        val twoStarButton = binding.twoStarButton
+        val oneStarButton = binding.oneStarButton
         val zamanAraligiTextView = binding.zamanAraligiTextView
         val excelCreateButton = binding.excelStudentButton
-        val konular = binding.tamamlananKonular
-        val screenTime = binding.screenTimeButton
-
-        screenTime.setOnClickListener {
-            val newIntent = Intent(this, ScreenTimesActivity::class.java)
-            newIntent.putExtra("studentID", studentID)
-            this.startActivity(newIntent)
-        }
-
-        konular.setOnClickListener {
-            val newIntent = Intent(this, SubjectCompActivity::class.java)
-            newIntent.putExtra("studentID", studentID)
-            this.startActivity(newIntent)
-        }
 
         setupStudyRecyclerView(studyList)
 
-        var cal = Calendar.getInstance()
-        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-        db.collection("User").document(studentID).get().addOnSuccessListener {
-            name = it.get("nameAndSurname").toString()
-            nameTextView.text = name
-
-        }
-        cal.clear(Calendar.MINUTE)
-        cal.clear(Calendar.SECOND)
-        cal.clear(Calendar.MILLISECOND)
-
-        zamanAraligiTextView.text = secilenZamanAraligi
-
-        excelCreateButton.setOnClickListener {
-            addData(sheet)
-
-            askForPermissions()
-        }
-
-        dersProgramiTeacherButton.setOnClickListener {
-            val newIntent = Intent(this, ProgramActivity::class.java)
+        previousRatingsButton.setOnClickListener {
+            val newIntent = Intent(this, PreviousRatingsActivity::class.java)
+            newIntent.putExtra("personType", "Teacher")
             newIntent.putExtra("studentID", studentID)
+            newIntent.putExtra("kurumKodu", kurumKodu.toString())
             this.startActivity(newIntent)
         }
 
-        when (secilenZamanAraligi) {
+        println(studentID)
 
-            "Bugün" -> {
-                baslangicTarihi = cal.time
-                binding.starScroll.visibility = View.VISIBLE
+        db.collection("User").document(studentID).get().addOnSuccessListener {
+            name = it.get("nameAndSurname").toString()
+            nameTextView.text = name
+        }
+        zamanAraligiTextView.text = secilenZamanAraligi
 
-                cal.add(Calendar.DAY_OF_YEAR, 1)
-                bitisTarihi = cal.time
-            }
+        excelCreateButton.setOnClickListener {
 
-            "Dün" -> {
-                binding.starScroll.visibility = View.VISIBLE
-                bitisTarihi = cal.time
+            Toast.makeText(this, "Lütfen Bekleyiniz...", Toast.LENGTH_SHORT).show()
+            addData(sheet)
 
-                cal.add(Calendar.DAY_OF_YEAR, -1)
-                baslangicTarihi = cal.time
-
-            }
-
-            "Bu Hafta" -> {
-                cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                baslangicTarihi = cal.time
-
-
-                cal.add(Calendar.WEEK_OF_YEAR, 1)
-                bitisTarihi = cal.time
-
-            }
-
-            "Geçen Hafta" -> {
-                cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                bitisTarihi = cal.time
-
-
-                cal.add(Calendar.DAY_OF_YEAR, -7)
-                baslangicTarihi = cal.time
-
-
-            }
-
-            "Bu Ay" -> {
-
-                cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-
-                cal.clear(Calendar.MINUTE)
-                cal.clear(Calendar.SECOND)
-                cal.clear(Calendar.MILLISECOND)
-
-                cal.set(Calendar.DAY_OF_MONTH, 1)
-                baslangicTarihi = cal.time
-
-
-                cal.add(Calendar.MONTH, 1)
-                bitisTarihi = cal.time
-
-
-            }
-
-            "Geçen Ay" -> {
-                cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-
-                cal.clear(Calendar.MINUTE)
-                cal.clear(Calendar.SECOND)
-                cal.clear(Calendar.MILLISECOND)
-
-                cal.set(Calendar.DAY_OF_MONTH, 1)
-                bitisTarihi = cal.time
-
-
-                cal.add(Calendar.MONTH, -1)
-                baslangicTarihi = cal.time
-
-            }
-
-            "Tüm Zamanlar" -> {
-                cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
-                baslangicTarihi = cal.time
-
-
-                cal.set(2077, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
-                bitisTarihi = cal.time
-
-            }
+            askForPermissions()
 
         }
+
         var toplamSure = 0
         var toplamSoru = 0
 
@@ -296,9 +233,34 @@ class StudiesActivity : AppCompatActivity() {
                 }
             }
 
+
+
+
+        fiveStarButton.setOnClickListener {
+            starFun(5)
+        }
+        fourStarButton.setOnClickListener {
+            starFun(4)
+        }
+
+        treeStarButton.setOnClickListener {
+            starFun(3)
+        }
+
+        twoStarButton.setOnClickListener {
+            starFun(2)
+        }
+
+        oneStarButton.setOnClickListener {
+            starFun(1)
+        }
+
         hedefTeacherButton.setOnClickListener {
             val intent2 = Intent(this, GoalsActivity::class.java)
             intent2.putExtra("studentID", studentID)
+            intent2.putExtra("personType", "Teacher")
+            intent2.putExtra("kurumKodu", kurumKodu.toString())
+
             this.startActivity(intent2)
         }
 
@@ -308,13 +270,27 @@ class StudiesActivity : AppCompatActivity() {
         denemelerButton.setOnClickListener {
             val intent2 = Intent(this, DenemelerActivity::class.java)
             intent2.putExtra("studentID", studentID)
+            intent2.putExtra("teacher", auth.uid.toString())
+            intent2.putExtra("grade", "0")
+            intent2.putExtra("personType", "Teacher")
+            intent2.putExtra("kurumKodu", kurumKodu.toString())
             this.startActivity(intent2)
         }
 
         gorevlerButton.setOnClickListener {
             val intent2 = Intent(this, DutiesActivity::class.java)
             intent2.putExtra("studentID", studentID)
+            intent2.putExtra("personType", "Teacher")
+            intent2.putExtra("kurumKodu", kurumKodu.toString())
             this.startActivity(intent2)
+        }
+
+        dersProgramiTeacherButton.setOnClickListener {
+            val newIntent = Intent(this, ProgramActivity::class.java)
+            newIntent.putExtra("studentID", studentID)
+            newIntent.putExtra("personType", "Teacher")
+            newIntent.putExtra("kurumKodu", kurumKodu.toString())
+            this.startActivity(newIntent)
         }
     }
 
@@ -325,7 +301,7 @@ class StudiesActivity : AppCompatActivity() {
 
         recyclerViewStudies.layoutManager = layoutManager
 
-        recyclerViewStudiesAdapter = ClassesAdapter(list)
+        recyclerViewStudiesAdapter = ClassesAdapter(list, kurumKodu)
 
         recyclerViewStudies.adapter = recyclerViewStudiesAdapter
         recyclerViewStudiesAdapter.notifyDataSetChanged()
@@ -333,6 +309,68 @@ class StudiesActivity : AppCompatActivity() {
     }
 
     private fun Float.format(digits: Int) = "%.${digits}f".format(this)
+
+    private fun starFun(yildisSayisi: Int) {
+
+        val now = Calendar.getInstance()
+
+
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("Çalışma Durumu")
+        alertDialog.setMessage("Çalışma Durumunu $yildisSayisi Yıldız Olarak Değerlendirmek İstiyor musunuz?")
+        alertDialog.setPositiveButton("$yildisSayisi Yıldız") { _, _ ->
+
+            if (secilenZamanAraligi == "Bugün") {
+                val degerlendirmeHash = hashMapOf(
+                    "yildizSayisi" to yildisSayisi,
+                    "time" to now.time,
+                    "degerlendirmeDate" to now.time
+                )
+
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(studentID).collection("Degerlendirme").document()
+                    .set(degerlendirmeHash).addOnSuccessListener {
+                        val notificationsSender = FcmNotificationsSenderService(
+                            "/topics/$studentID",
+                            "Çalışmanızın Durumu",
+                            "Çalışmanızın Durumu $yildisSayisi Yıldız Olarak Değerlendirildi. \nÇalışma Tarihi: $secilenZamanAraligi",
+                            this
+                        )
+                        notificationsSender.sendNotifications()
+                        Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
+
+                    }
+            } else {
+                now.add(Calendar.DAY_OF_YEAR, -1)
+                val degerlendirmeHash = hashMapOf(
+                    "yildizSayisi" to yildisSayisi,
+                    "time" to Calendar.getInstance().time,
+                    "degerlendirmeDate" to now.time
+                )
+
+                db.collection("School").document(kurumKodu.toString()).collection("Student")
+                    .document(studentID).collection("Degerlendirme").document()
+                    .set(degerlendirmeHash).addOnSuccessListener {
+                        val notificationsSender = FcmNotificationsSenderService(
+                            "/topics/$studentID",
+                            "Çalışmanızın Durumu",
+                            "Çalışmanızın Durumu $yildisSayisi Yıldız Olarak Değerlendirildi. \nÇalışma Tarihi: $secilenZamanAraligi",
+                            this
+                        )
+                        notificationsSender.sendNotifications()
+                        Toast.makeText(this, "İşlem Başarılı!", Toast.LENGTH_SHORT).show()
+
+                    }
+            }
+
+        }
+        alertDialog.setNegativeButton("İptal") { _, _ ->
+
+        }
+        alertDialog.show()
+
+
+    }
 
     @SuppressLint("Range", "Recycle", "SimpleDateFormat")
     private fun createExcel() {
@@ -508,95 +546,6 @@ class StudiesActivity : AppCompatActivity() {
     }
 
     private fun addData(sheet: Sheet) {
-        var cal = Calendar.getInstance()
-        cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-
-        cal.clear(Calendar.MINUTE)
-        cal.clear(Calendar.SECOND)
-        cal.clear(Calendar.MILLISECOND)
-        when (secilenZamanAraligi) {
-            "Bugün" -> {
-                baslangicTarihi = cal.time
-
-
-                cal.add(Calendar.DAY_OF_YEAR, 1)
-                bitisTarihi = cal.time
-            }
-
-            "Dün" -> {
-                bitisTarihi = cal.time
-
-                cal.add(Calendar.DAY_OF_YEAR, -1)
-                baslangicTarihi = cal.time
-            }
-
-            "Bu Hafta" -> {
-                cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                baslangicTarihi = cal.time
-
-
-                cal.add(Calendar.WEEK_OF_YEAR, 1)
-                bitisTarihi = cal.time
-
-            }
-
-            "Geçen Hafta" -> {
-                cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
-                bitisTarihi = cal.time
-
-
-                cal.add(Calendar.DAY_OF_YEAR, -7)
-                baslangicTarihi = cal.time
-
-
-            }
-
-            "Bu Ay" -> {
-
-                cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-
-                cal.clear(Calendar.MINUTE)
-                cal.clear(Calendar.SECOND)
-                cal.clear(Calendar.MILLISECOND)
-
-                cal.set(Calendar.DAY_OF_MONTH, 1)
-                baslangicTarihi = cal.time
-
-
-                cal.add(Calendar.MONTH, 1)
-                bitisTarihi = cal.time
-
-
-            }
-
-            "Geçen Ay" -> {
-                cal = Calendar.getInstance()
-                cal[Calendar.HOUR_OF_DAY] = 0 // ! clear would not reset the hour of day !
-
-                cal.clear(Calendar.MINUTE)
-                cal.clear(Calendar.SECOND)
-                cal.clear(Calendar.MILLISECOND)
-
-                cal.set(Calendar.DAY_OF_MONTH, 1)
-                bitisTarihi = cal.time
-
-
-                cal.add(Calendar.MONTH, -1)
-                baslangicTarihi = cal.time
-
-            }
-
-            "Tüm Zamanlar" -> {
-                cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
-                baslangicTarihi = cal.time
-
-
-                cal.set(2077, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
-                bitisTarihi = cal.time
-
-            }
-        }
 
         var indexNum = 0
         db.collection("School").document(kurumKodu.toString()).collection("Student")

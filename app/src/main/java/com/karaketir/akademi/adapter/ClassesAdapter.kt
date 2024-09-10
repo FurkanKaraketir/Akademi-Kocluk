@@ -12,8 +12,10 @@ import com.karaketir.akademi.ActivityStudiesByClasses
 import com.karaketir.akademi.R
 import com.karaketir.akademi.databinding.ClassGridRowBinding
 
-class ClassesAdapter(private val classList: ArrayList<com.karaketir.akademi.models.Class>) :
-    RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
+class ClassesAdapter(
+    private val classList: ArrayList<com.karaketir.akademi.models.Class>,
+    private val kurumKodu: Int
+) : RecyclerView.Adapter<ClassesAdapter.ClassHolder>() {
 
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
@@ -45,6 +47,7 @@ class ClassesAdapter(private val classList: ArrayList<com.karaketir.akademi.mode
                     val intent = Intent(
                         holder.itemView.context, ActivityStudiesByClasses::class.java
                     )
+                    intent.putExtra("kurumKodu", kurumKodu.toString())
                     intent.putExtra("studentID", myItem.studentID)
                     intent.putExtra("dersAdi", myItem.dersAdi)
                     intent.putExtra("baslangicTarihi", myItem.baslangicTarihi)

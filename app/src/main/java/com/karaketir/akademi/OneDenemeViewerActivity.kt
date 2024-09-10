@@ -35,6 +35,7 @@ class OneDenemeViewerActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private var denemeStudentID = ""
     private var secilenZamanAraligi = ""
+    private var kurumKodu = 0
     private var denemeTur = ""
 
     @SuppressLint("SetTextI18n")
@@ -50,6 +51,7 @@ class OneDenemeViewerActivity : AppCompatActivity() {
         denemeTur = intent.getStringExtra("denemeTür").toString()
         denemeStudentID = intent.getStringExtra("denemeStudentID").toString()
         secilenZamanAraligi = intent.getStringExtra("secilenZamanAraligi").toString()
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
         val denemeTitle = binding.oneDenemeTitle
         val turkNetTextView = binding.turkceNetTextView
         val tarihNetTextView = binding.tarihNetTextView
@@ -64,7 +66,6 @@ class OneDenemeViewerActivity : AppCompatActivity() {
         val toplamNetTextView = binding.toplamNetTextView
 
 
-        val kurumKodu = 763455
 
         db.collection("School").document(kurumKodu.toString()).collection("Student")
             .document(denemeStudentID).collection("Denemeler").document(denemeID!!).get()
@@ -135,6 +136,7 @@ class OneDenemeViewerActivity : AppCompatActivity() {
 
             val intent = Intent(this, DenemeNetGraphByTimeActivity::class.java)
             intent.putExtra("dersAdi", "ToplamNet")
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("denemeOwnerID", denemeStudentID)
             intent.putExtra("denemeTür", denemeTur)
             intent.putExtra("zamanAraligi", secilenZamanAraligi)
@@ -152,6 +154,7 @@ class OneDenemeViewerActivity : AppCompatActivity() {
 
             val intent = Intent(this, DenemeNetGraphByTimeActivity::class.java)
             intent.putExtra("dersAdi", dersAdi)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("denemeTür", denemeTur)
             intent.putExtra("denemeOwnerID", denemeStudentID)
             intent.putExtra("zamanAraligi", secilenZamanAraligi)
@@ -163,6 +166,7 @@ class OneDenemeViewerActivity : AppCompatActivity() {
             val intent = Intent(this, DenemeGraphActivity::class.java)
             intent.putExtra("dersAdi", dersAdi)
             intent.putExtra("denemeTür", denemeTur)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("denemeOwnerID", denemeStudentID)
             intent.putExtra("zamanAraligi", secilenZamanAraligi)
             this.startActivity(intent)

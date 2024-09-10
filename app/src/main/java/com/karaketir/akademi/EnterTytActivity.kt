@@ -14,8 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.karaketir.akademi.databinding.ActivityEnterTytBinding
-import java.util.Calendar
-import java.util.UUID
+import java.util.*
+import kotlin.collections.ArrayList
 
 class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     init {
@@ -37,7 +37,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private lateinit var binding: ActivityEnterTytBinding
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-
+    private var kurumKodu = 0
     private var turkceDogruDegeri = 0
     private var turkceYanlisDegeri = 0
     private var cogDogruDegeri = 0
@@ -60,7 +60,9 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private var biyolojiYanlisDegeri = 0
     private var denemeAdi = ""
     private var denemeList = ArrayList<String>()
-    private val kurumKodu = 763455
+    private var grade = 0
+    private var teacher = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +73,9 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         auth = Firebase.auth
         db = Firebase.firestore
 
-
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
+        grade = intent.getStringExtra("grade").toString().toInt()
+        teacher = intent.getStringExtra("teacher").toString()
         val denemeAdiSpinner = binding.denemeAdiSpinner
 
         setupNumberPickerForStringValues()
@@ -86,49 +90,41 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
         val studyType = intent.getStringExtra("studyType")
 
-        db.collection("User").document(auth.uid.toString()).get().addOnSuccessListener {
-            val grade = it.get("grade").toString().toInt()
 
-            db.collection("School").document(kurumKodu.toString()).collection("Student")
-                .document(auth.uid.toString()).get().addOnSuccessListener { ogrenci ->
-                    val ogretmenID = ogrenci.get("teacher").toString()
 
-                    db.collection("School").document(kurumKodu.toString()).collection("Teacher")
-                        .document(ogretmenID).collection("Denemeler")
-                        .whereGreaterThan("bitisTarihi", cal.time).whereEqualTo("tür", studyType)
-                        .whereEqualTo("grade", grade).addSnapshotListener { value, error ->
-                            if (error != null) {
-                                println(error.localizedMessage)
-                            }
-                            denemeList.clear()
-                            if (value != null && !value.isEmpty) {
 
-                                for (deneme in value) {
-                                    denemeList.add(deneme.get("denemeAdi").toString())
-                                }
-                                val denemeAdapter = ArrayAdapter(
-                                    this@EnterTytActivity,
-                                    android.R.layout.simple_spinner_item,
-                                    denemeList
-                                )
-                                denemeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                                denemeAdiSpinner.adapter = denemeAdapter
-                                denemeAdiSpinner.onItemSelectedListener = this
-                            }
-                            if (denemeList.isEmpty()) {
-                                binding.denemeNameEditText.visibility = View.VISIBLE
-                                binding.denemeSpinnerLayout.visibility = View.GONE
 
-                            } else {
-                                binding.denemeNameEditText.visibility = View.GONE
-                                binding.denemeSpinnerLayout.visibility = View.VISIBLE
-                            }
+        db.collection("School").document(kurumKodu.toString()).collection("Teacher")
+            .document(teacher).collection("Denemeler").whereGreaterThan("bitisTarihi", cal.time)
+            .whereEqualTo("tür", studyType).whereEqualTo("grade", grade)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    println(error.localizedMessage)
+                }
+                denemeList.clear()
+                if (value != null && !value.isEmpty) {
 
-                        }
+                    for (deneme in value) {
+                        denemeList.add(deneme.get("denemeAdi").toString())
+                    }
+                    val denemeAdapter = ArrayAdapter(
+                        this@EnterTytActivity, android.R.layout.simple_spinner_item, denemeList
+                    )
+                    denemeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    denemeAdiSpinner.adapter = denemeAdapter
+                    denemeAdiSpinner.onItemSelectedListener = this
+                }
+                if (denemeList.isEmpty()) {
+                    binding.denemeNameEditText.visibility = View.VISIBLE
+                    binding.denemeSpinnerLayout.visibility = View.GONE
 
+                } else {
+                    binding.denemeNameEditText.visibility = View.GONE
+                    binding.denemeSpinnerLayout.visibility = View.VISIBLE
                 }
 
-        }
+            }
+
 
         val documentID = UUID.randomUUID().toString()
 
@@ -158,6 +154,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         fizYanlisButton.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Fizik")
             this.startActivity(intent)
@@ -165,6 +162,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         biYanlisButton.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Biyoloji")
             this.startActivity(intent)
@@ -173,6 +171,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         kimYanlis.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Kimya")
             this.startActivity(intent)
@@ -181,6 +180,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         geoYanlisButton.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Geometri")
             this.startActivity(intent)
@@ -189,6 +189,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         matYanlisButton.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Matematik")
             this.startActivity(intent)
@@ -197,6 +198,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         dinYanlisButton.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Din")
             this.startActivity(intent)
@@ -205,6 +207,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         felYanlis.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Felsefe")
             this.startActivity(intent)
@@ -213,6 +216,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         tarihYanlis.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Tarih")
             this.startActivity(intent)
@@ -220,6 +224,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         cogYanlis.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Coğrafya")
             this.startActivity(intent)
@@ -227,6 +232,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         turkYanlisBtn.setOnClickListener {
             val intent = Intent(this, DenemeYanlisKonuActivity::class.java)
             intent.putExtra("tür", studyType)
+            intent.putExtra("kurumKodu", kurumKodu.toString())
             intent.putExtra("documentID", documentID)
             intent.putExtra("dersAdi", "Türkçe-Edebiyat")
             this.startActivity(intent)
@@ -520,9 +526,7 @@ class EnterTytActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
 
     }
-
 }
-
 
 
 

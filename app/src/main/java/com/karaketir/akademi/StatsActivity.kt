@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.karaketir.akademi
 
 import android.Manifest
@@ -37,6 +39,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -63,7 +66,7 @@ class StatsActivity : AppCompatActivity() {
     private lateinit var bitisTarihi: Date
     private lateinit var layoutManager: GridLayoutManager
     private var secilenZamanAraligi = ""
-    private val handler = Handler(Looper.getMainLooper())
+    private var kurumKodu = 0
     private val workbook = XSSFWorkbook()
     private var secilenGrade = ""
     private lateinit var recyclerViewStats: RecyclerView
@@ -74,8 +77,21 @@ class StatsActivity : AppCompatActivity() {
     private var ogrenciSayisi = 0
     private var gradeList = arrayOf("Bütün Sınıflar", "12", "11", "10", "9", "0")
 
-    private val zamanAraliklari =
-        arrayOf("Bugün", "Dün", "Bu Hafta", "Geçen Hafta", "Bu Ay", "Geçen Ay", "Tüm Zamanlar")
+    private val zamanAraliklari = arrayOf(
+        "Bugün",
+        "Dün",
+        "Bu Hafta",
+        "Geçen Hafta",
+        "Bu Ay",
+        "Son 30 Gün",
+        "Geçen Ay",
+        "Son 2 Ay",
+        "Son 3 Ay",
+        "Son 4 Ay",
+        "Son 5 Ay",
+        "Son 6 Ay",
+        "Tüm Zamanlar"
+    )
 
     @SuppressLint("Recycle", "Range", "SimpleDateFormat")
     private fun createExcel() {
@@ -336,6 +352,8 @@ class StatsActivity : AppCompatActivity() {
         auth = Firebase.auth
         db = Firebase.firestore
 
+        kurumKodu = intent.getStringExtra("kurumKodu").toString().toInt()
+
         val sheet: Sheet = workbook.createSheet("Sayfa 1")
 
         //Create Header Cell Style
@@ -408,8 +426,8 @@ class StatsActivity : AppCompatActivity() {
                         cal.clear(Calendar.SECOND)
                         cal.clear(Calendar.MILLISECOND)
 
-                        when (position) {
-                            0 -> {
+                        when (secilenZamanAraligi) {
+                            "Bugün" -> {
                                 baslangicTarihi = cal.time
 
 
@@ -417,14 +435,14 @@ class StatsActivity : AppCompatActivity() {
                                 bitisTarihi = cal.time
                             }
 
-                            1 -> {
+                            "Dün" -> {
                                 bitisTarihi = cal.time
 
                                 cal.add(Calendar.DAY_OF_YEAR, -1)
                                 baslangicTarihi = cal.time
                             }
 
-                            2 -> {
+                            "Bu Hafta" -> {
                                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                                 baslangicTarihi = cal.time
 
@@ -434,7 +452,7 @@ class StatsActivity : AppCompatActivity() {
 
                             }
 
-                            3 -> {
+                            "Geçen Hafta" -> {
                                 cal[Calendar.DAY_OF_WEEK] = cal.firstDayOfWeek
                                 bitisTarihi = cal.time
 
@@ -445,7 +463,18 @@ class StatsActivity : AppCompatActivity() {
 
                             }
 
-                            4 -> {
+                            "Son 30 Gün" -> {
+                                cal = Calendar.getInstance()
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.DAY_OF_YEAR, -30)
+
+                                baslangicTarihi = cal.time
+
+                            }
+
+                            "Bu Ay" -> {
 
                                 cal = Calendar.getInstance()
                                 cal[Calendar.HOUR_OF_DAY] =
@@ -465,7 +494,7 @@ class StatsActivity : AppCompatActivity() {
 
                             }
 
-                            5 -> {
+                            "Geçen Ay" -> {
                                 cal = Calendar.getInstance()
                                 cal[Calendar.HOUR_OF_DAY] =
                                     0 // ! clear would not reset the hour of day !
@@ -483,7 +512,83 @@ class StatsActivity : AppCompatActivity() {
 
                             }
 
-                            6 -> {
+                            "Son 2 Ay" -> {
+                                cal = Calendar.getInstance()
+                                cal[Calendar.HOUR_OF_DAY] =
+                                    0 // ! clear would not reset the hour of day !
+
+                                cal.clear(Calendar.MINUTE)
+                                cal.clear(Calendar.SECOND)
+                                cal.clear(Calendar.MILLISECOND)
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.MONTH, -2)
+                                baslangicTarihi = cal.time
+                            }
+
+                            "Son 3 Ay" -> {
+                                cal = Calendar.getInstance()
+                                cal[Calendar.HOUR_OF_DAY] =
+                                    0 // ! clear would not reset the hour of day !
+
+                                cal.clear(Calendar.MINUTE)
+                                cal.clear(Calendar.SECOND)
+                                cal.clear(Calendar.MILLISECOND)
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.MONTH, -3)
+                                baslangicTarihi = cal.time
+                            }
+
+                            "Son 4 Ay" -> {
+                                cal = Calendar.getInstance()
+                                cal[Calendar.HOUR_OF_DAY] =
+                                    0 // ! clear would not reset the hour of day !
+
+                                cal.clear(Calendar.MINUTE)
+                                cal.clear(Calendar.SECOND)
+                                cal.clear(Calendar.MILLISECOND)
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.MONTH, -4)
+                                baslangicTarihi = cal.time
+                            }
+
+                            "Son 5 Ay" -> {
+                                cal = Calendar.getInstance()
+                                cal[Calendar.HOUR_OF_DAY] =
+                                    0 // ! clear would not reset the hour of day !
+
+                                cal.clear(Calendar.MINUTE)
+                                cal.clear(Calendar.SECOND)
+                                cal.clear(Calendar.MILLISECOND)
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.MONTH, -5)
+                                baslangicTarihi = cal.time
+                            }
+
+                            "Son 6 Ay" -> {
+                                cal = Calendar.getInstance()
+                                cal[Calendar.HOUR_OF_DAY] =
+                                    0 // ! clear would not reset the hour of day !
+
+                                cal.clear(Calendar.MINUTE)
+                                cal.clear(Calendar.SECOND)
+                                cal.clear(Calendar.MILLISECOND)
+
+                                bitisTarihi = cal.time
+
+                                cal.add(Calendar.MONTH, -6)
+                                baslangicTarihi = cal.time
+                            }
+
+
+                            "Tüm Zamanlar" -> {
                                 cal.set(1970, Calendar.JANUARY, Calendar.DAY_OF_WEEK)
                                 baslangicTarihi = cal.time
 
@@ -495,8 +600,8 @@ class StatsActivity : AppCompatActivity() {
                         }
 
 
-                        val kurumKodu = 763455
                         val dersListesi = kotlin.collections.ArrayList<String>()
+
 
 
                         db.collection("Lessons").orderBy("dersAdi", Query.Direction.ASCENDING)
@@ -740,10 +845,12 @@ class StatsActivity : AppCompatActivity() {
 
         }
 
-        handler.post(object : Runnable {
+        val weakHandler = Handler(WeakReferenceHandlerCallback(this))
+
+        weakHandler.post(object : Runnable {
             override fun run() {
                 // Keep the postDelayed before the updateTime(), so when the event ends, the handler will stop too.
-                handler.postDelayed(this, 2000)
+                weakHandler.postDelayed(this, 2000)
                 showSum()
             }
         })
@@ -794,4 +901,14 @@ class StatsActivity : AppCompatActivity() {
         }
     }
 
+    // Define a WeakReferenceHandlerCallback class
+    class WeakReferenceHandlerCallback(activity: StatsActivity) : Handler.Callback {
+        private val weakReference = WeakReference(activity)
+
+        override fun handleMessage(msg: Message): Boolean {
+            weakReference.get()
+
+            return true
+        }
+    }
 }
